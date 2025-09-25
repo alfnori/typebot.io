@@ -65,6 +65,7 @@ model User {
   credentials                 UserCredentials[]
   groupTitlesAutoGeneration   Json?
   preferredLanguage           String?                   @db.VarChar(10)
+  termsAcceptedAt             DateTime?
 }
 
 model ApiToken {
@@ -178,6 +179,7 @@ model UserCredentials {
 model VerificationToken {
   identifier String
   token      String   @unique
+  value      String?  @db.Text
   expires    DateTime
 
   @@unique([identifier, token])
@@ -447,6 +449,7 @@ enum Plan {
   OFFERED
   CUSTOM
   UNLIMITED
+  ENTERPRISE
 }
 
 enum CollaborationType {

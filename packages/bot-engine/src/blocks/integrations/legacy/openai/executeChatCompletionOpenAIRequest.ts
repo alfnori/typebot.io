@@ -1,13 +1,11 @@
 import type { OpenAIBlock } from "@typebot.io/blocks-integrations/openai/schema";
+import type { ContinueChatResponse } from "@typebot.io/chat-api/schemas";
 import { isNotEmpty } from "@typebot.io/lib/utils";
 import { HTTPError } from "ky";
 import { type ClientOptions, OpenAI } from "openai";
-import type { ContinueChatResponse } from "../../../../schemas/api";
 
-type Props = Pick<
-  OpenAI.Chat.ChatCompletionCreateParams,
-  "messages" | "model"
-> & {
+type Props = Pick<OpenAI.Chat.ChatCompletionCreateParams, "model"> & {
+  messages: OpenAI.Chat.ChatCompletionMessageParam[] | undefined;
   apiKey: string;
   temperature: number | undefined;
   currentLogs?: ContinueChatResponse["logs"];
@@ -28,7 +26,7 @@ export const executeChatCompletionOpenAIRequest = async ({
   logs?: ContinueChatResponse["logs"];
 }> => {
   const logs: ContinueChatResponse["logs"] = currentLogs;
-  if (messages.length === 0) return { logs };
+  if (!messages || messages.length === 0) return { logs };
   try {
     const config = {
       apiKey,

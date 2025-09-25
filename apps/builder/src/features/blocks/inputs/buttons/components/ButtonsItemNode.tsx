@@ -109,7 +109,7 @@ export const ButtonsItemNode = ({ item, indices, isMouseOver }: Props) => {
       closeOnBlur={false}
     >
       <PopoverAnchor>
-        <Flex px={4} py={2} justify="center" w="90%">
+        <Flex px={4} py={2} justify="center" w="full">
           <Editable
             ref={editableRef}
             flex="1"
@@ -139,12 +139,13 @@ export const ButtonsItemNode = ({ item, indices, isMouseOver }: Props) => {
             />
           </Editable>
           <SlideFade
-            offsetY="0px"
-            offsetX="-10px"
+            offsetY="5px"
+            offsetX="-5px"
             in={isMouseOver}
             style={{
               position: "absolute",
-              left: "-40px",
+              right: "-0.25rem",
+              top: "-0.25rem",
               zIndex: 3,
             }}
             unmountOnExit
@@ -154,7 +155,7 @@ export const ButtonsItemNode = ({ item, indices, isMouseOver }: Props) => {
                 aria-label={t("blocks.inputs.button.openSettings.ariaLabel")}
                 icon={<SettingsIcon />}
                 variant="ghost"
-                size="sm"
+                size="xs"
                 shadow="md"
                 onClick={() => setOpenedNodeId(item.id)}
               />

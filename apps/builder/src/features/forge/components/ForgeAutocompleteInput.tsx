@@ -1,6 +1,12 @@
 import { MoreInfoTooltip } from "@/components/MoreInfoTooltip";
+import {
+  type Item,
+  getItemLabel,
+  getItemValue,
+} from "@/components/collections";
 import { Combobox } from "@/components/combobox";
 import { Field } from "@/components/field";
+import { useParentModal } from "@/features/graph/providers/ParentModalProvider";
 import { VariablesButton } from "@/features/variables/components/VariablesButton";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useInjectableInputValue } from "@/hooks/useInjectableInputValue";
@@ -13,7 +19,6 @@ import {
 } from "@typebot.io/ui/components/Select";
 import { cx } from "@typebot.io/ui/lib/cva";
 import { type ReactNode, useEffect, useRef } from "react";
-import { getItemLabel, getItemValue } from "../helpers/collections";
 import { useFilteredCollection } from "../hooks/useFilteredCollection";
 import { useSelectItemsQuery } from "../hooks/useSelectItemsQuery";
 
@@ -34,11 +39,25 @@ type Props = {
   onChange: (value: string | undefined) => void;
 };
 export const ForgeAutocompleteInput = ({
-  defaultValue,
   credentialsScope,
   fetcherId,
   options,
   blockDef,
+  ...props
+}: Props) => {
+  const { items } = useSelectItemsQuery({
+    credentialsScope,
+    blockDef,
+    options,
+    fetcherId,
+  });
+
+  return <AutocompleteInput items={items} {...props} />;
+};
+
+export const AutocompleteInput = ({
+  items,
+  defaultValue,
   placeholder,
   label,
   helperText,
@@ -48,7 +67,9 @@ export const ForgeAutocompleteInput = ({
   width,
   withVariableButton = false,
   onChange,
-}: Props) => {
+}: Omit<Props, "credentialsScope" | "fetcherId" | "options" | "blockDef"> & {
+  items: Item[] | undefined;
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const {
     value: inputValue,
@@ -58,13 +79,6 @@ export const ForgeAutocompleteInput = ({
     isTouched,
   } = useInjectableInputValue({
     ref: inputRef,
-  });
-
-  const { items } = useSelectItemsQuery({
-    credentialsScope,
-    blockDef,
-    options,
-    fetcherId,
   });
 
   const filteredCollection = useFilteredCollection({
@@ -115,7 +129,7 @@ export const ForgeAutocompleteInput = ({
             )}
           </Combobox.Label>
         )}
-        <div className="flex items-center">
+        <div className="flex items-center w-full">
           <Combobox.Control>
             <Combobox.Input />
           </Combobox.Control>
@@ -130,7 +144,7 @@ export const ForgeAutocompleteInput = ({
         </div>
 
         <Portal>
-          <Combobox.Positioner>
+          <Combobox.Positioner className="ark-positioner-z-10">
             {filteredCollection.size > 0 &&
               (filteredCollection.size > 1 ||
                 getItemLabel(filteredCollection.items[0]) !== inputValue) && (

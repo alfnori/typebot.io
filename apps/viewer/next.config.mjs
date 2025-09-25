@@ -36,6 +36,7 @@ const landingPagePaths = [
   "/terms-of-service",
   "/about",
   "/oss-friends",
+  "/business-continuity",
   "/blog",
   "/blog/:slug*",
 ];
@@ -50,11 +51,8 @@ const nextConfig = {
   transpilePackages: ["@typebot.io/settings"],
   reactStrictMode: true,
   output: "standalone",
-  experimental: {
-    outputFileTracingRoot: join(__dirname, "../../"),
-    serverComponentsExternalPackages: ["isolated-vm"],
-    instrumentationHook: true,
-  },
+  outputFileTracingRoot: join(__dirname, "../../"),
+  serverExternalPackages: ["isolated-vm"],
   webpack: (config, { isServer }) => {
     if (isServer) {
       // TODO: Remove once https://github.com/getsentry/sentry-javascript/issues/8105 is merged and sentry is upgraded
@@ -86,8 +84,8 @@ const nextConfig = {
       beforeFiles: (process.env.LANDING_PAGE_URL
         ? [
             {
-              source: "/_build/assets/:asset*",
-              destination: `${process.env.LANDING_PAGE_URL}/_build/assets/:asset*`,
+              source: "/assets/:asset*",
+              destination: `${process.env.LANDING_PAGE_URL}/assets/:asset*`,
             },
             {
               source: "/blog-assets/:asset*",

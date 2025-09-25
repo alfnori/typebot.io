@@ -1,18 +1,15 @@
+import { datesAreOnSameDay } from "@/helpers/datesAreOnSameDate";
 import { useDebounce } from "@/hooks/useDebounce";
-import { toast } from "@/lib/toast";
 import { useColorMode } from "@chakra-ui/react";
+import { env } from "@typebot.io/env";
 import { isDefined } from "@typebot.io/lib/utils";
-import type {
-  ClientUser,
-  UpdateUser,
-  User,
-} from "@typebot.io/schemas/features/user/schema";
+import type { ClientUser, UpdateUser, User } from "@typebot.io/user/schemas";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import type { ReactNode } from "react";
 import { createContext, useEffect, useState } from "react";
 import { setLocaleInCookies } from "./helpers/setLocaleInCookies";
-import { updateUserQuery } from "./queries/updateUserQuery";
+import { useUpdateUserMutation } from "./hooks/useUpdateUserMutation";
 
 export const userContext = createContext<{
   user?: ClientUser;
@@ -20,10 +17,12 @@ export const userContext = createContext<{
   currentWorkspaceId?: string;
   logOut: () => void;
   updateUser: (newUser: Partial<UpdateUser>) => void;
+  updateLocalUserEmail: (newEmail: string) => void;
 }>({
   isLoading: false,
   logOut: () => {},
   updateUser: () => {},
+  updateLocalUserEmail: () => {},
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -32,6 +31,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [currentWorkspaceId, setCurrentWorkspaceId] = useState<string>();
   const { setColorMode } = useColorMode();
   const [localUser, setLocalUser] = useState<ClientUser>();
+
+  const updateUserMutation = useUpdateUserMutation();
 
   useEffect(() => {
     const currentColorScheme = localStorage.getItem("chakra-ui-color-mode") as
@@ -82,7 +83,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
               }
             : undefined,
       });
-  }, [router.isReady, router.pathname, status]);
+    if (
+      env.NEXT_PUBLIC_ONBOARDING_TYPEBOT_ID &&
+      !router.pathname.includes("/onboarding") &&
+      !session?.user.termsAcceptedAt &&
+      session?.user.createdAt &&
+      datesAreOnSameDay(new Date(session.user.createdAt), new Date())
+    ) {
+      router.replace("/onboarding");
+    }
+  }, [router.isReady, router.pathname, status, session?.user.termsAcceptedAt]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -112,10 +122,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const saveUser = useDebounce(async (updates: Partial<User>) => {
     if (!localUser) return;
-    const { error } = await updateUserQuery(localUser.id, updates);
-    if (error) toast({ context: error.name, description: error.message });
-    await refreshUser();
+    updateUserMutation.mutate({ updates });
   });
+
+  const updateLocalUserEmail = (newEmail: string) => {
+    if (!localUser) return;
+    setLocalUser({ ...localUser, email: newEmail });
+  };
 
   useEffect(() => {
     if ((!session?.user && !localUser) || (session?.user && localUser)) return;
@@ -130,19 +143,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         logOut: signOut,
         updateUser,
         currentWorkspaceId,
+        updateLocalUserEmail,
       }}
     >
       {children}
     </userContext.Provider>
   );
-};
-
-export const refreshUser = async () => {
-  await fetch("/api/auth/session?update");
-  reloadSession();
-};
-
-const reloadSession = () => {
-  const event = new Event("visibilitychange");
-  document.dispatchEvent(event);
 };

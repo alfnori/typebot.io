@@ -1,4 +1,5 @@
 import { isInputBlock } from "@typebot.io/blocks-core/helpers";
+import { inputMessageSchema } from "@typebot.io/chat-api/schemas";
 import type { Prisma } from "@typebot.io/prisma/types";
 import {
   answerInSessionStateSchemaV2,
@@ -82,11 +83,6 @@ const sessionStateSchemaV2 = z.object({
   version: z.literal("2"),
   typebotsQueue: z.array(
     z.object({
-      // TODO: Remove this once v3.5 is out
-      edgeIdToTriggerWhenDone: z
-        .string()
-        .optional()
-        .describe("Deprecated, use queuedEdgeIds instead"),
       queuedEdgeIds: z.array(z.string()).optional(),
       isMergingWithParent: z.boolean().optional(),
       resultId: z.string().optional(),
@@ -127,6 +123,14 @@ const sessionStateSchemaV2 = z.object({
       totalAnswers: z.number(),
     })
     .optional(),
+  returnMark: z
+    .object({
+      status: z.enum(["pending", "called"]).default("pending"),
+      blockId: z.string(),
+      autoResumeMessage: inputMessageSchema.optional(),
+    })
+    .optional()
+    .describe("Used by a potential future Return block"),
 });
 
 const sessionStateSchemaV3 = sessionStateSchemaV2
@@ -200,9 +204,9 @@ const migrateFromV1ToV2 = (
         };
       }),
       isMergingWithParent: true,
-      edgeIdToTriggerWhenDone:
+      queuedEdgeIds:
         state.linkedTypebots.queue.length > 0
-          ? state.linkedTypebots.queue[0]?.edgeId
+          ? [state.linkedTypebots.queue[0]?.edgeId]
           : undefined,
     },
     ...state.linkedTypebots.typebots.map(
@@ -231,8 +235,9 @@ const migrateFromV1ToV2 = (
               value: answer.content,
             };
           }),
-          edgeIdToTriggerWhenDone: state.linkedTypebots.queue.at(index + 1)
-            ?.edgeId,
+          queuedEdgeIds: state.linkedTypebots.queue.at(index + 1)
+            ? [state.linkedTypebots.queue.at(index + 1)!.edgeId]
+            : undefined,
         }) satisfies SessionState["typebotsQueue"][number],
     ),
   ],

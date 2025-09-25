@@ -6,16 +6,7 @@ import { NumberInput, TextInput, Textarea } from "@/components/inputs";
 import { CodeEditor } from "@/components/inputs/CodeEditor";
 import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
 import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  FormLabel,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { FormLabel, Stack } from "@chakra-ui/react";
 import type { ForgedBlockDefinition } from "@typebot.io/forge-repository/definitions";
 import type { ForgedBlock } from "@typebot.io/forge-repository/schemas";
 import { evaluateIsHidden } from "@typebot.io/forge/helpers/evaluateIsHidden";
@@ -23,7 +14,10 @@ import type { ZodLayoutMetadata } from "@typebot.io/zod";
 import Markdown, { type Components } from "react-markdown";
 import type { ZodTypeAny, z } from "zod";
 import { getZodInnerSchema } from "../../helpers/getZodInnerSchema";
-import { ForgeAutocompleteInput } from "../ForgeAutocompleteInput";
+import {
+  AutocompleteInput,
+  ForgeAutocompleteInput,
+} from "../ForgeAutocompleteInput";
 import { ForgeSelectInput } from "../ForgeSelectInput";
 import { ZodDiscriminatedUnionLayout } from "./ZodDiscriminatedUnionLayout";
 import { ZodObjectLayout } from "./ZodObjectLayout";
@@ -108,30 +102,6 @@ export const ZodFieldLayout = ({
       );
     }
     case "ZodArray": {
-      if (layout?.accordion)
-        return (
-          <Accordion allowToggle>
-            <AccordionItem>
-              <AccordionButton>
-                <Text w="full" textAlign="left">
-                  {layout?.accordion}
-                </Text>
-                <AccordionIcon />
-              </AccordionButton>
-              <AccordionPanel as={Stack} pt="4">
-                <ZodArrayContent
-                  data={data}
-                  schema={innerSchema}
-                  blockDef={blockDef}
-                  blockOptions={blockOptions}
-                  layout={layout}
-                  onDataChange={onDataChange}
-                  isInAccordion
-                />
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-        );
       return (
         <ZodArrayContent
           data={data}
@@ -194,6 +164,27 @@ export const ZodFieldLayout = ({
       );
     }
     case "ZodString": {
+      if (layout?.autoCompleteItems) {
+        return (
+          <AutocompleteInput
+            items={layout.autoCompleteItems}
+            defaultValue={data ?? layout.defaultValue}
+            placeholder={layout.placeholder}
+            label={layout.label}
+            helperText={
+              layout?.helperText ? (
+                <Markdown components={mdComponents}>
+                  {layout.helperText}
+                </Markdown>
+              ) : undefined
+            }
+            moreInfoTooltip={layout?.moreInfoTooltip}
+            onChange={onDataChange}
+            width={width}
+            withVariableButton={layout.withVariableButton ?? true}
+          />
+        );
+      }
       if (layout?.fetcher) {
         if (!blockDef) return null;
         if (layout.allowCustomText)

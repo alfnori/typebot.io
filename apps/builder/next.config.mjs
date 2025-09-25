@@ -38,18 +38,20 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  transpilePackages: ["@typebot.io/billing", "@typebot.io/blocks-bubbles"],
+  transpilePackages: [
+    // https://github.com/nextauthjs/next-auth/discussions/9385#discussioncomment-12023012
+    "next-auth",
+    "@typebot.io/billing",
+    "@typebot.io/blocks-bubbles",
+  ],
   reactStrictMode: true,
   output: "standalone",
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr", "pt", "pt-BR", "de", "ro", "es", "it", "el"],
   },
-  experimental: {
-    outputFileTracingRoot: join(__dirname, "../../"),
-    serverComponentsExternalPackages: ["isolated-vm"],
-    instrumentationHook: true,
-  },
+  serverExternalPackages: ["isolated-vm"],
+  outputFileTracingRoot: join(__dirname, "../../"),
   webpack: (config, { isServer }) => {
     if (isServer) {
       // TODO: Remove once https://github.com/getsentry/sentry-javascript/issues/8105 is merged and sentry is upgraded
@@ -80,25 +82,12 @@ const nextConfig = {
     ];
   },
   async rewrites() {
-    return process.env.NEXT_PUBLIC_POSTHOG_KEY
-      ? [
-          {
-            source: "/ingest/:path*",
-            destination:
-              (process.env.NEXT_PUBLIC_POSTHOG_HOST ??
-                "https://app.posthog.com") + "/:path*",
-          },
-          {
-            source: "/healthz",
-            destination: "/api/health",
-          },
-        ]
-      : [
-          {
-            source: "/healthz",
-            destination: "/api/health",
-          },
-        ];
+    return [
+      {
+        source: "/healthz",
+        destination: "/api/health",
+      },
+    ];
   },
 };
 

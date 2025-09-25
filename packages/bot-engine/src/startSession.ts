@@ -8,6 +8,14 @@ import { IntegrationBlockType } from "@typebot.io/blocks-integrations/constants"
 import type { GoogleAnalyticsBlock } from "@typebot.io/blocks-integrations/googleAnalytics/schema";
 import type { PixelBlock } from "@typebot.io/blocks-integrations/pixel/schema";
 import { LogicBlockType } from "@typebot.io/blocks-logic/constants";
+import {
+  type StartChatInput,
+  type StartChatResponse,
+  type StartPreviewChatInput,
+  type StartTypebot,
+  type StartTypebotV6,
+  startTypebotSchema,
+} from "@typebot.io/chat-api/schemas";
 import type {
   SessionState,
   TypebotInSession,
@@ -48,14 +56,6 @@ import { parseDynamicTheme } from "./parseDynamicTheme";
 import { findPublicTypebot } from "./queries/findPublicTypebot";
 import { findResult } from "./queries/findResult";
 import { findTypebot } from "./queries/findTypebot";
-import {
-  type StartChatInput,
-  type StartChatResponse,
-  type StartPreviewChatInput,
-  type StartTypebot,
-  type StartTypebotV6,
-  startTypebotSchema,
-} from "./schemas/api";
 import { startBotFlow } from "./startBotFlow";
 
 type StartParams =
@@ -88,7 +88,7 @@ export const startSession = async ({
   }
 > => {
   const typebot = await getTypebot(startParams);
-  Sentry.setTag("typebotId", typebot.id);
+  Sentry.setUser({ id: typebot.id });
 
   const prefilledVariables = startParams.prefilledVariables
     ? prefillVariables(typebot.variables, startParams.prefilledVariables)
@@ -205,9 +205,7 @@ export const startSession = async ({
     sessionStore,
     message: startParams.message,
     state: initialState,
-    startFrom:
-      startParams.type === "preview" ? startParams.startFrom : undefined,
-    startTime: Date.now(),
+    startFrom: startParams.startFrom,
     textBubbleContentFormat: startParams.textBubbleContentFormat,
   });
 
@@ -496,8 +494,21 @@ const sanitizeAndParseHeadCode = (code: string) => {
 };
 
 const removeLiteBadgeCss = (code: string) => {
-  const liteBadgeCssRegex = /.*#lite-badge.*{[\s\S][^{]*}/gm;
-  return code.replace(liteBadgeCssRegex, "");
+  // Remove all comments
+  code = code.replace(/\/\*[\s\S]*?\*\//gm, "");
+
+  // Match any rule containing lite-badge, handling nested blocks
+  let prevCode;
+  do {
+    prevCode = code;
+    code = code.replace(
+      /([^{}]*)lite-badge[^{]*{[^{}]*}|[^{}]*lite-badge[^{]*{([^{}]*{[^{}]*})*[^{}]*}/gi,
+      "",
+    );
+  } while (code !== prevCode);
+
+  // Clean up any empty media queries or other nested rules
+  return code.replace(/@[^{]+{[\s]*}/gm, "");
 };
 
 const convertStartTypebotToTypebotInSession = (

@@ -10,12 +10,18 @@ const ignoreTrpcMessages = [
   "current block does not expect file upload",
   "couldn't find credentials in database",
   "start group doesn't exist",
+  "origin not allowed",
+  "Missing credentialsId",
+  "Provided response is not valid JSON",
+  "Could not parse amount, make sure your block is configured correctly",
 ];
 
 const ignoreMessages = [
   "could not find credentials",
   "is in reply state",
   "point to another phone ID",
+  "message did not matched any condition",
+  "no public typebot with WhatsApp integration found",
 ];
 
 const crawlersToIgnore = ["Googlebot"];
@@ -23,7 +29,6 @@ const crawlersToIgnore = ["Googlebot"];
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV,
-  tracesSampleRate: 1,
   beforeSend: (event, hint) => {
     const exception = hint.originalException;
     const userAgent = event.contexts?.browser?.name;

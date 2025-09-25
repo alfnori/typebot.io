@@ -18,11 +18,10 @@ test("should work as expected", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Paris" })).toBeVisible();
   await page.getByRole("button", { name: "More info" }).nth(0).click();
   await expect(page.getByRole("img", { name: "Attached image" })).toBeVisible();
-  await expect(page.getByText("Paris")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Title 1" })).toBeVisible();
   await expect(page.getByText("Desc 1")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Title 2" })).toBeVisible();
   await expect(page.getByText("Desc 2")).toBeVisible();
   await page.getByRole("button", { name: "Continue" }).nth(1).click();
-  await expect(page.getByText("Cool! Goodbye.")).toBeVisible();
+  await expect(page.getByText("You've selected Title 2")).toBeVisible();
 });

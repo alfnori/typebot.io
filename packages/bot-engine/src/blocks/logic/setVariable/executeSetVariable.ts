@@ -7,6 +7,7 @@ import type { SetVariableBlock } from "@typebot.io/blocks-logic/setVariable/sche
 import type { SessionState } from "@typebot.io/chat-session/schemas";
 import { byId, isEmpty, isNotDefined } from "@typebot.io/lib/utils";
 import prisma from "@typebot.io/prisma";
+import type { Prisma } from "@typebot.io/prisma/types";
 import type { Answer } from "@typebot.io/results/schemas/answers";
 import type { SessionStore } from "@typebot.io/runtime-session-store";
 import { evaluateSetVariableExpression } from "@typebot.io/variables/evaluateSetVariableExpression";
@@ -31,10 +32,12 @@ export const executeSetVariable = async (
     state,
     sessionStore,
     setVariableHistory,
+    visitedEdges,
   }: {
     state: SessionState;
     sessionStore: SessionStore;
     setVariableHistory: SetVariableHistoryItem[];
+    visitedEdges: Prisma.VisitedEdge[];
   },
 ): Promise<ExecuteLogicResponse> => {
   const { variables } = state.typebotsQueue[0].typebot;
@@ -48,6 +51,7 @@ export const executeSetVariable = async (
     sessionStore,
     blockId: block.id,
     setVariableHistory,
+    visitedEdges,
   });
   const isCode =
     (!block.options.type || block.options.type === "Custom") &&
@@ -139,11 +143,13 @@ const getExpressionToEvaluate = async (
     sessionStore,
     blockId,
     setVariableHistory,
+    visitedEdges,
   }: {
     state: SessionState;
     sessionStore: SessionStore;
     blockId: string;
     setVariableHistory: SetVariableHistoryItem[];
+    visitedEdges: Prisma.VisitedEdge[];
   },
 ): Promise<
   | { type: "code"; code: string }
@@ -322,18 +328,37 @@ const getExpressionToEvaluate = async (
     case "Device type": {
       return {
         type: "code",
-        code: `
-function guessDevice() {
-  if (window.matchMedia('(max-width: 767px)').matches) return 'mobile';
-  if (window.matchMedia('(max-width: 1024px)').matches) return 'tablet';
-  return 'desktop';
-}
+        code: `const detectDeviceType = () => {
+  const hasTouch = ('ontouchstart' in window) || 
+                   (navigator.maxTouchPoints > 0) || 
+                   (navigator.msMaxTouchPoints > 0);
+  
+  const isTabletByUA = /(tablet|ipad|playbook|silk)|(android(?!.*mobile))/i.test(
+    navigator.userAgent
+  );
+  
+  const isMobileByUA = /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated/i.test(
+    navigator.userAgent
+  );
+  
+  const width = window.innerWidth;
+  if (isTabletByUA || (hasTouch && width >= 768 && width <= 1024)) {
+    return 'tablet';
+  } else if (isMobileByUA || (hasTouch && width < 768)) {
+    return 'mobile';
+  } else {
+    return 'desktop';
+  }
+};
 
-return guessDevice()`,
+return detectDeviceType()`,
       };
     }
     case "Transcript": {
-      const props = await parseTranscriptProps(state);
+      const props = await parseTranscriptProps(state, {
+        visitedEdges,
+        setVariableHistory,
+      });
       if (!props) return null;
       const typebotWithEmptyVariables = {
         ...state.typebotsQueue[0].typebot,
@@ -344,7 +369,7 @@ return guessDevice()`,
       };
       const transcript = computeResultTranscript({
         typebot: typebotWithEmptyVariables,
-        stopAtBlockId: blockId,
+        currentBlockId: blockId,
         ...props,
         setVariableHistory: props.setVariableHistory.concat(setVariableHistory),
         sessionStore,
@@ -386,10 +411,20 @@ type ParsedTranscriptProps = {
 
 const parseTranscriptProps = async (
   state: SessionState,
+  {
+    visitedEdges,
+    setVariableHistory,
+  }: {
+    visitedEdges: Prisma.VisitedEdge[];
+    setVariableHistory: SetVariableHistoryItem[];
+  },
 ): Promise<ParsedTranscriptProps | undefined> => {
   if (!state.typebotsQueue[0].resultId)
     return parsePreviewTranscriptProps(state);
-  return parseResultTranscriptProps(state);
+  return parseResultTranscriptProps(state, {
+    visitedEdges,
+    setVariableHistory,
+  });
 };
 
 const parsePreviewTranscriptProps = async (
@@ -414,6 +449,13 @@ type UnifiedAnswersFromDB = (ParsedTranscriptProps["answers"][number] & {
 
 const parseResultTranscriptProps = async (
   state: SessionState,
+  {
+    visitedEdges,
+    setVariableHistory,
+  }: {
+    visitedEdges: Prisma.VisitedEdge[];
+    setVariableHistory: SetVariableHistoryItem[];
+  },
 ): Promise<ParsedTranscriptProps | undefined> => {
   const result = await prisma.result.findUnique({
     where: {
@@ -451,7 +493,14 @@ const parseResultTranscriptProps = async (
       },
     },
   });
-  if (!result) return;
+  if (!result)
+    return {
+      answers: [],
+      setVariableHistory: setVariableHistory.sort((a, b) => a.index - b.index),
+      visitedEdges: visitedEdges
+        .sort((a, b) => a.index - b.index)
+        .map((edge) => edge.edgeId),
+    };
   return {
     answers: (result.answersV2 as UnifiedAnswersFromDB)
       .concat(result.answers as UnifiedAnswersFromDB)

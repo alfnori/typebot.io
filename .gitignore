@@ -56,3 +56,8 @@ snapshots
 
 .content-collections
 .history
+
+*.local.md
+
+.tanstack
+.nitro
