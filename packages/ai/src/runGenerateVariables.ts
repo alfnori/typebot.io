@@ -3,7 +3,7 @@ import { parseUnknownError } from "@typebot.io/lib/parseUnknownError";
 import { isNotEmpty } from "@typebot.io/lib/utils";
 import type { Variable } from "@typebot.io/variables/schemas";
 import { z } from "@typebot.io/zod";
-import { type LanguageModel, generateObject } from "ai";
+import { generateObject, type LanguageModel } from "ai";
 import type {
   GenerateVariablesOptions,
   variablesToExtractSchema,
@@ -84,6 +84,9 @@ const convertVariablesToExtractToSchema = ({
         break;
       case "boolean":
         shape[matchingVariable.name] = z.boolean();
+        break;
+      case "array":
+        shape[matchingVariable.name] = z.array(z.string());
         break;
       case "enum": {
         if (!variableToExtract.values || variableToExtract.values.length === 0)

@@ -1,5 +1,3 @@
-import { MoreInfoTooltip } from "@/components/MoreInfoTooltip";
-import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
 import {
   Accordion,
   AccordionButton,
@@ -11,7 +9,9 @@ import {
 } from "@chakra-ui/react";
 import { useTranslate } from "@tolgee/react";
 import type { InvalidReplyEvent } from "@typebot.io/events/schemas";
+import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import type { Variable } from "@typebot.io/variables/schemas";
+import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
 
 export const InvalidReplyEventSettings = ({
   options,
