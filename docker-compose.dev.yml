@@ -23,6 +23,7 @@ services:
       - s3_data:/data
     networks:
       - typebot_typebot-network
+
   # This service just make sure a bucket with the right policies is created
   createbuckets:
     image: minio/mc
@@ -36,6 +37,9 @@ services:
       /usr/bin/mc anonymous set public minio/typebot/public;
       exit 0;
       "
+    networks:
+      - typebot_typebot-network
+
 volumes:
   db_data:
   s3_data:
