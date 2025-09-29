@@ -22,7 +22,8 @@ services:
     volumes:
       - s3_data:/data
     networks:
-      - typebot_typebot-network
+      typebot_typebot-network:
+        ipv4_address: 172.22.0.4
 
   # This service just make sure a bucket with the right policies is created
   createbuckets:

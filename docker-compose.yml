@@ -8,6 +8,8 @@ x-typebot-common: &typebot-common
   networks:
     - typebot-network
   env_file: .env
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
   environment:
     REDIS_URL: redis://typebot-redis:6379
 
@@ -52,25 +54,29 @@ services:
 
   typebot-builder:
     <<: *typebot-common
-    image: baptistearno/typebot-builder:latest
+    image: baptistearno/typebot-builder:3.8
     ports:
-      - "5000:3000"
-    networks:
-      typebot-network:
-        ipv4_address: 172.22.0.4
-
-  typebot-viewer:
-    <<: *typebot-common
-    image: baptistearno/typebot-viewer:latest
-    ports:
-      - "5001:3000"
+      - "3000:3000"
     networks:
       typebot-network:
         ipv4_address: 172.22.0.5
 
+  typebot-viewer:
+    <<: *typebot-common
+    image: baptistearno/typebot-viewer:3.8.0
+    ports:
+      - "3001:3000"
+    networks:
+      typebot-network:
+        ipv4_address: 172.22.0.6
+
 networks:
   typebot-network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+          gateway: 172.22.0.1
 
 volumes:
   db-data:

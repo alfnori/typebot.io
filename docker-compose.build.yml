@@ -24,13 +24,13 @@ services:
     #     condition: service_healthy
     restart: always
     ports:
-      - "5000:3000"
+      - "3000:3000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file: .env
     networks:
       typebot_typebot-network:
-        ipv4_address: 172.22.0.4
+        ipv4_address: 172.22.0.5
 
   typebot-viewer:
     build:
@@ -42,11 +42,13 @@ services:
     #     condition: service_healthy
     restart: always
     ports:
-      - "5001:3000"
+      - "3001:3000"
     env_file: .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       typebot_typebot-network:
-        ipv4_address: 172.22.0.5
+        ipv4_address: 172.22.0.6
 
 networks:
   typebot_typebot-network:
