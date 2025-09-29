@@ -28,7 +28,8 @@ services:
     ports:
       - 5432:5432
     networks:
-      - typebot-network
+      typebot-network:
+        ipv4_address: 172.22.0.3
 
   typebot-redis:
     image: redis:alpine
@@ -46,19 +47,26 @@ services:
     volumes:
       - redis-data:/data
     networks:
-      - typebot-network
+      typebot-network:
+        ipv4_address: 172.22.0.2
 
   typebot-builder:
     <<: *typebot-common
     image: baptistearno/typebot-builder:latest
     ports:
-      - "8080:3000"
+      - "5000:3000"
+    networks:
+      typebot-network:
+        ipv4_address: 172.22.0.4
 
   typebot-viewer:
     <<: *typebot-common
     image: baptistearno/typebot-viewer:latest
     ports:
-      - "8181:3000"
+      - "5001:3000"
+    networks:
+      typebot-network:
+        ipv4_address: 172.22.0.5
 
 networks:
   typebot-network:
