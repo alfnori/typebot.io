@@ -30,7 +30,7 @@ services:
     env_file: .env
     networks:
       typebot_typebot-network:
-        ipv4_address: 172.22.0.5
+        # ipv4_address: 172.22.0.5
 
   typebot-viewer:
     build:
@@ -48,7 +48,7 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       typebot_typebot-network:
-        ipv4_address: 172.22.0.6
+        # ipv4_address: 172.22.0.6
 
 networks:
   typebot_typebot-network:

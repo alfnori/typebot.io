@@ -1,5 +1,5 @@
 # ================= INSTALL BUN ===================
-ARG BUN_VERSION=1.2.8
+ARG BUN_VERSION=1.2.23
 FROM debian:bullseye-slim AS build-bun
 ARG BUN_VERSION
 RUN apt-get update -qq \
