@@ -1,5 +1,5 @@
 # ================= INSTALL BUN ===================
-ARG BUN_VERSION=1.2.23
+ARG BUN_VERSION=1.2.8
 FROM debian:bullseye-slim AS build-bun
 ARG BUN_VERSION
 RUN apt-get update -qq \
@@ -99,12 +99,13 @@ ARG SCOPE
 ENV SCOPE=${SCOPE}
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/prisma/postgresql ./packages/prisma/postgresql
+COPY --from=builder /app/packages/prisma/mysql ./packages/prisma/mysql
 COPY --from=builder --chown=node:node /app/apps/${SCOPE}/.next/standalone ./
 COPY --from=builder --chown=node:node /app/apps/${SCOPE}/.next/static ./apps/${SCOPE}/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/${SCOPE}/public ./apps/${SCOPE}/public
 
 RUN ./node_modules/.bin/prisma generate --schema=packages/prisma/postgresql/schema.prisma;
-
+#RUN ./node_modules/.bin/prisma generate --schema=packages/prisma/mysql/schema.prisma;
 
 COPY scripts/${SCOPE}-entrypoint.sh ./
 RUN chmod +x ./${SCOPE}-entrypoint.sh

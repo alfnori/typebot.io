@@ -10,6 +10,26 @@ services:
   #   environment:
   #     POSTGRES_DB: "typebot"
   #     POSTGRES_PASSWORD: "typebot"
+
+  typebot-db-mysql:
+    image: mysql:5.6.34
+    restart: always
+    container_name: typebot-db-mysql
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=typebot
+      - MYSQL_USER=typebot
+      - MYSQL_PASSWORD=typebot
+      - MYSQL_ROOT_PASSWORD=typebot
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+    networks:
+      typebot_typebot-network:
+
   typebot-minio:
     image: minio/minio
     command: server /data --console-address ":9001"
@@ -44,6 +64,7 @@ services:
 volumes:
   db_data:
   s3_data:
+  mysql_data:
 
 networks:
   typebot_typebot-network:
