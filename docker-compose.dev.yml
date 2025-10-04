@@ -33,6 +33,7 @@ services:
   typebot-minio:
     image: minio/minio
     command: server /data --console-address ":9001"
+    restart: always
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -43,7 +44,6 @@ services:
       - s3_data:/data
     networks:
       typebot_typebot-network:
-        # ipv4_address: 172.22.0.4
 
   # This service just make sure a bucket with the right policies is created
   createbuckets:
