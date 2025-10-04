@@ -12,7 +12,7 @@ services:
   #     POSTGRES_PASSWORD: "typebot"
 
   typebot-db-mysql:
-    image: mysql:5.6.34
+    image: mysql:5.7.44
     restart: always
     container_name: typebot-db-mysql
     env_file:

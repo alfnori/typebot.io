@@ -11,6 +11,7 @@
     "db:push": "dotenv -e ./.env -e ../../.env -- tsx scripts/db-push.ts",
     "migrate:deploy": "dotenv -e ./.env -e ../../.env -- tsx scripts/migrate-deploy.ts",
     "create-migration-file": "dotenv -e ./.env -e ../../.env -- prisma migrate dev --create-only --schema postgresql/schema.prisma",
+    "create-migration-file:mysql": "dotenv -e ./.env -e ../../.env -- prisma migrate dev --create-only --schema mysql/schema.prisma",
     "db:migrate": "bun migrate:deploy"
   },
   "dependencies": {
