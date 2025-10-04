@@ -148,7 +148,8 @@
     "next-runtime-env": "1.6.2",
     "superjson": "1.12.4",
     "tailwindcss": "3.4.17",
-    "vite-tsconfig-paths": "5.1.4",
-    "vitest": "3.1.4"
+    "vite": "^7.1.9",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }
