@@ -13,7 +13,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup --env.NODE_ENV=production"
   },
   "devDependencies": {
     "@ai-sdk/ui-utils": "1.2.2",
