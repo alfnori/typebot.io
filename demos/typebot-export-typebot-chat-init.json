@@ -1,12 +1,12 @@
 {
   "version": "6.1",
-  "id": "fmosjdoa71fim7e853zpt5s7",
+  "id": "ibdcvmv9xb5okev6okfol2gk",
   "name": "Typebot Chat Init",
   "events": [
     {
       "id": "w69gttkoa8dpar6xwffc4d6l",
       "outgoingEdgeId": "ajh3tqcnhw93yh7tfbo9skgv",
-      "graphCoordinates": { "x": 0, "y": 1 },
+      "graphCoordinates": { "x": -417.78, "y": 123.15 },
       "type": "start"
     }
   ],
@@ -99,9 +99,10 @@
                 "bodyPath": "statusCode"
               }
             ],
+            "isExecutedOnClient": false,
             "webhook": {
               "method": "GET",
-              "url": "http://172.17.0.1:8765/typebot/init/departments/{{ChatHash}}/{{ChatFingerprint}}"
+              "url": "http://189.84.133.65:8765/typebot/init/departments/{{ChatHash}}/{{ChatFingerprint}}"
             }
           }
         }
@@ -110,11 +111,11 @@
     {
       "id": "z5kp5y2xy1bmarm22x0owsgy",
       "title": "Create button by name departments",
-      "graphCoordinates": { "x": 1474.75, "y": 54.36 },
+      "graphCoordinates": { "x": 1429.11, "y": 415.13 },
       "blocks": [
         {
           "id": "pi4mr5z5l5udo847odx1vw5u",
-          "outgoingEdgeId": "djc2bypqpft33v046q9dw2qe",
+          "outgoingEdgeId": "un3p0lrha4e1agxrda57ms1z",
           "type": "choice input",
           "items": [
             {
@@ -138,35 +139,14 @@
     {
       "id": "fei5710uscp9b9hu53bk70r1",
       "title": "Mock result",
-      "graphCoordinates": { "x": 2079.3, "y": -87.26 },
+      "graphCoordinates": { "x": 1833.3, "y": 97.74 },
       "blocks": [
         {
           "id": "gksgm9hqvvblnwwe0yu8gpcr",
           "type": "Code",
           "options": {
             "name": "Script_SetDepartment",
-            "content": "console.log(\"AAAAA\", {{mappedDepartments}})"
-          }
-        }
-      ]
-    },
-    {
-      "id": "evyw39b8zasz3w5434ldxzxt",
-      "title": "Map departments list",
-      "graphCoordinates": { "x": 1834.82, "y": 102.57 },
-      "blocks": [
-        {
-          "id": "g1dqj12oqd7xvwku8nh5zv6g",
-          "outgoingEdgeId": "bo4m4271dhd8kt00nqe4fhgb",
-          "type": "Set variable",
-          "options": {
-            "variableId": "vl9u8q4y36sdbkyk15bg1gdlj",
-            "type": "Map item with same index",
-            "mapListItemParams": {
-              "baseItemVariableId": "vv250sj1jdecmrt4wibtzazug",
-              "baseListVariableId": "vlh75xwy9wmne7842hir80mmz",
-              "targetListVariableId": "vtb1l4um9jstsdjdj9jlfoh7t"
-            }
+            "content": "console.log(\"mappedDepartment\", {{mappedDepartment}})"
           }
         }
       ]
@@ -207,7 +187,7 @@
     {
       "id": "d2bn5igvyd8i8o0z0u1fjbuf",
       "title": "Department list empty - EXIT",
-      "graphCoordinates": { "x": 1474.92, "y": 398.13 },
+      "graphCoordinates": { "x": 1422.39, "y": 153.85 },
       "blocks": [
         {
           "id": "ljyys5my707pmvf0just2q7e",
@@ -218,7 +198,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Parece que não existem departamentos online neste momento. Tente mais tarde!"
+                    "text": "Parece que não existem departamentos online neste momento. Volte em outro momento!"
                   }
                 ]
               }
@@ -304,7 +284,7 @@
           "outgoingEdgeId": "hp3cc4ot4oeab9l7j3opn6o2",
           "type": "Code",
           "options": {
-            "content": "if(!{{ChatHash}}) {\n  setVariable('ChatHash', '8d71e7de5d107f410a25318851631677')\n}\n\nif(!{{ChatFingerprint}}) {\n  setVariable('ChatFingerprint', '85acec91-ed6d-4218-bd8b-4325bb36cec7')\n}",
+            "content": "if(!{{ChatHash}}) {\n  setVariable('ChatHash', '8d71e7de5d107f410a25318851631677')\n}\n\nif(!{{ChatFingerprint}}) {\n  setVariable('ChatFingerprint', '85acec91-ed6d-4218-bd8b-4325bb36cec7')\n}\n\nif (!{{DirectchatHostAPI}}) {\n  setVariable('DirectchatHostAPI', 'http://localhost:8765/')\n}\n\nsetVariable('RedirectTypebotTicketURL', 'https://www.google.com/')",
             "isExecutedOnClient": false
           }
         }
@@ -313,18 +293,18 @@
     {
       "id": "ssk4vj2t0zger2uev4jpuo0f",
       "title": "Welcome department",
-      "graphCoordinates": { "x": 2210.42, "y": 112.58 },
+      "graphCoordinates": { "x": 2204.69, "y": 221.07 },
       "blocks": [
         {
           "id": "wr800wuknh8cc0ozpn4iofki",
-          "outgoingEdgeId": "yuuznivbxyent21o89ql9c5d",
+          "outgoingEdgeId": "yls1e42blqkeqlhgzf3crogn",
           "type": "text",
           "content": {
             "richText": [
               {
                 "type": "p",
                 "children": [
-                  { "text": "Olá, bem-vindo ao {{selectedDepartment}}." }
+                  { "text": "Olá, bem-vindo ao {{selectedDepartment}}" }
                 ]
               }
             ]
@@ -446,11 +426,11 @@
     {
       "id": "ociq3jcne1ea4n2ha1l7382k",
       "title": "Phone input",
-      "graphCoordinates": { "x": 4024.93, "y": 663.61 },
+      "graphCoordinates": { "x": 3838.25, "y": 671.93 },
       "blocks": [
         {
           "id": "wgw7pc1mecdxqq0zu6qlk6la",
-          "outgoingEdgeId": "xd3gh4px1sy9vjuso1o1qnkj",
+          "outgoingEdgeId": "bpsy6l0hnkqs353d3dlo58zn",
           "type": "phone number input",
           "options": {
             "variableId": "vhmq6epq6mb78oapzeskgqbw5",
@@ -467,11 +447,11 @@
     {
       "id": "wkrkel1m2saukaujzrk4nh8f",
       "title": "Validate message",
-      "graphCoordinates": { "x": 4406.84, "y": 655.37 },
+      "graphCoordinates": { "x": 4380.19, "y": 803.74 },
       "blocks": [
         {
           "id": "sgvdid3o5hi5ypkcwnpbtk3b",
-          "outgoingEdgeId": "c2xtrmifjcyb8pzkov568i2t",
+          "outgoingEdgeId": "qgpb1b12bqjyg97mh2w7kiv6",
           "type": "text",
           "content": {
             "richText": [
@@ -491,7 +471,7 @@
     {
       "id": "c58hp93mz9dn9nus4p45xkha",
       "title": "OK - Data",
-      "graphCoordinates": { "x": 4723.76, "y": 887.57 },
+      "graphCoordinates": { "x": 5142.13, "y": 1577.92 },
       "blocks": [
         {
           "id": "loswkon36cf24768u7zp1c1l",
@@ -513,8 +493,8 @@
     },
     {
       "id": "bujs63xrki427b7k81u4335h",
-      "title": "NOK - Data",
-      "graphCoordinates": { "x": 4294.51, "y": 945.84 },
+      "title": "NOK - Already have ticket",
+      "graphCoordinates": { "x": 4296.78, "y": 1507.09 },
       "blocks": [
         {
           "id": "vu6pbbhovj558zwf75127zq5",
@@ -538,7 +518,7 @@
     {
       "id": "n0y1iho5w97gzaagzliftmga",
       "title": "Thank you",
-      "graphCoordinates": { "x": 4499.06, "y": 1203.57 },
+      "graphCoordinates": { "x": 3915.36, "y": 1563.13 },
       "blocks": [
         {
           "id": "hdhd9mh9q4f6kiekybztdzwy",
@@ -548,6 +528,318 @@
               {
                 "type": "p",
                 "children": [{ "text": "Agradecemos seu contato. Até mais!" }]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "acoxe7wz30kyuwm0za91grrn",
+      "title": "Map departments list",
+      "graphCoordinates": { "x": 1839, "y": 296 },
+      "blocks": [
+        {
+          "id": "lhmbrmzd3b5em5hd8il2dxni",
+          "outgoingEdgeId": "nbt47ytssby6pykpmsf2p8tb",
+          "type": "Set variable",
+          "options": {
+            "variableId": "vgpdxvwh8yrzwrgmxzfjrbuyt",
+            "type": "Map item with same index",
+            "mapListItemParams": {
+              "baseItemVariableId": "vv250sj1jdecmrt4wibtzazug",
+              "baseListVariableId": "vlh75xwy9wmne7842hir80mmz",
+              "targetListVariableId": "vtb1l4um9jstsdjdj9jlfoh7t"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "b1vbeq29xmhdxi6bewx83iy5",
+      "title": "Reading sleep",
+      "graphCoordinates": { "x": 5534.66, "y": 1470.61 },
+      "blocks": [
+        {
+          "id": "iqnhvjqenkj31g0z0sq8r0pl",
+          "outgoingEdgeId": "hd7q73qbj8nstrb81kh2w10h",
+          "type": "Wait",
+          "options": { "secondsToWaitFor": "5" }
+        }
+      ]
+    },
+    {
+      "id": "sw82l2fzn9nhgxuolkv2sab6",
+      "title": "Redirect ticket",
+      "graphCoordinates": { "x": 5542.46, "y": 1634.73 },
+      "blocks": [
+        {
+          "id": "q9xndbvphnstcf1x6ptu6sth",
+          "type": "Redirect",
+          "options": { "url": "{{RedirectTypebotTicketURL}}" }
+        }
+      ]
+    },
+    {
+      "id": "uhndmog16ig0m6sdvjt9qe4w",
+      "title": "Text input",
+      "graphCoordinates": { "x": 3904.34, "y": 859 },
+      "blocks": [
+        {
+          "id": "suyf4vkigxj160j2f9aqz6u4",
+          "outgoingEdgeId": "rvc65x1lj70af6wtve7a838x",
+          "type": "text input",
+          "options": {
+            "labels": {
+              "placeholder": "Nos diga como podemos ajudar!",
+              "button": "Enviar"
+            },
+            "variableId": "vl13s1clp590vlc597313s05s",
+            "isLong": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "axkt1ttlqqayub8q7li0cm1a",
+      "title": "Ask text reason",
+      "graphCoordinates": { "x": 3465.33, "y": 850.33 },
+      "blocks": [
+        {
+          "id": "bcqxvsvzjwnpt540t681ezrd",
+          "outgoingEdgeId": "i1ssa4rsfh74flrpynrsstsu",
+          "type": "text",
+          "content": {
+            "richText": [
+              {
+                "type": "p",
+                "children": [
+                  {
+                    "text": "Agora, em poucas palavras, nos diga do que precisa."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "goznbksaf5vkbzyvvri09ryw",
+      "title": "Validate chatbot answers",
+      "graphCoordinates": { "x": 4369.1, "y": 1051.79 },
+      "blocks": [
+        {
+          "id": "gvdodxrfn9mkbpddmkvoiakx",
+          "outgoingEdgeId": "jsj158bhj0oyxd3g4ontsrf2",
+          "type": "Webhook",
+          "options": {
+            "variablesForTest": [
+              {
+                "id": "wgiqjht3qonn13kd7ojj6iee",
+                "variableId": "vo7wi973aof8oyf4j9uysp49y",
+                "value": "22abf6b9-e684-4838-9ef3-e25de5ea229d"
+              },
+              {
+                "id": "uyzbn5r4wpmnattnx0j5bj4b",
+                "variableId": "vz57mcm3hl9b6hm45soebh9p9",
+                "value": "8d71e7de5d107f410a25318851631677"
+              },
+              {
+                "id": "d7gth1biyr1o4hlnwbwx183n",
+                "variableId": "vhmq6epq6mb78oapzeskgqbw5",
+                "value": "+5541988730745"
+              },
+              {
+                "id": "gn8hl16ixp55x3eex23rod4l",
+                "variableId": "vl13s1clp590vlc597313s05s",
+                "value": "Olá Typebot"
+              },
+              {
+                "id": "qozcvxtn72ygjh801d4rirxq",
+                "variableId": "vu741qd1he9ic24rvbl6cyxt5",
+                "value": "alfnori@gmail.com"
+              },
+              {
+                "id": "t5ohg03y4m1vk5z6hbn2nbwl",
+                "variableId": "vin5zgihl5pv9i50t0p04u3s2",
+                "value": "Adolfo Luiz"
+              },
+              {
+                "id": "ljf1itvt5eolmb8o6j20zsyo",
+                "variableId": "vgpdxvwh8yrzwrgmxzfjrbuyt",
+                "value": "376"
+              }
+            ],
+            "responseVariableMapping": [
+              {
+                "id": "w9l6alvm1f924ny62fycz128",
+                "variableId": "vka9kd8zvjfi8d87d8zm5icwx",
+                "bodyPath": "statusCode"
+              },
+              {
+                "id": "h4xnq99e692kiootartvf1q3",
+                "variableId": "vzr8ovdwvzrykmxhp01x46qh7",
+                "bodyPath": "data.currentSession"
+              },
+              {
+                "id": "z1hynktox38e66wsik3hgxv8",
+                "variableId": "vewqpyy7duofctksy9on06yb8",
+                "bodyPath": "data.message"
+              },
+              {
+                "id": "tn2m6mg95bin419xi49wilk4",
+                "variableId": "vzwy1hvhckrjog6zslwwhj5ft",
+                "bodyPath": "data.redirect"
+              }
+            ],
+            "isCustomBody": true,
+            "isExecutedOnClient": false,
+            "webhook": {
+              "url": "http://189.84.133.65:8765/typebot/init/start/{{ChatHash}}/{{ChatFingerprint}}",
+              "body": "{\n    \"name\": \"{{selectedName}}\",\n    \"email\": \"{{selectedEmail}}\",\n    \"phone\": \"{{selectedPhone}}\",\n    \"department\": \"{{mappedDepartment}}\",\n    \"text\": \"{{selectedText}}\"\n}"
+            },
+            "timeout": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "txls0sdsbxnvoh94vb1rj0ch",
+      "title": "Group #30",
+      "graphCoordinates": { "x": 4762, "y": 1071 },
+      "blocks": [
+        {
+          "id": "phrak29n3qm2egzaiwsqjzo1",
+          "type": "Code",
+          "options": {
+            "content": "console.log('Payload', {{validatedPayload}}, {{validateChatbotCode}})"
+          }
+        }
+      ]
+    },
+    {
+      "id": "du1rez6jm71ui0gxx83i6u3p",
+      "title": "Validate chatbot verification",
+      "graphCoordinates": { "x": 4696.88, "y": 1347.62 },
+      "blocks": [
+        {
+          "id": "gff0o3ieko3zrhl2elqq5jb2",
+          "type": "Condition",
+          "items": [
+            {
+              "id": "u08dw2qsvaaep3h7qgwgm678",
+              "outgoingEdgeId": "klgv56eetjyl7h0bffqfg1eg",
+              "content": {
+                "comparisons": [
+                  {
+                    "id": "acr7uxouhwv6zs2l1t7knk06",
+                    "variableId": "vka9kd8zvjfi8d87d8zm5icwx",
+                    "comparisonOperator": "Equal to",
+                    "value": "200"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "oyjsji2g1q8o41x6sdq66ht3",
+              "outgoingEdgeId": "w2yj4k0wxngtm52u7xfjmsap",
+              "content": {
+                "logicalOperator": "OR",
+                "comparisons": [
+                  {
+                    "id": "ang89a43b14kzovigxrl11n5",
+                    "variableId": "vzr8ovdwvzrykmxhp01x46qh7",
+                    "comparisonOperator": "Equal to",
+                    "value": "whatsapp"
+                  },
+                  { "id": "gr99pugf82hgdu15zs2rd10e" }
+                ]
+              }
+            },
+            {
+              "id": "x95gddrlaq0fatuwjpi4edsk",
+              "outgoingEdgeId": "h8pfb4at1xh729bbczydb2p0",
+              "content": {
+                "comparisons": [
+                  {
+                    "id": "so5halycqamo6iduma2s1yhb",
+                    "variableId": "vka9kd8zvjfi8d87d8zm5icwx",
+                    "comparisonOperator": "Not equal",
+                    "value": "200"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "u4h2zfqv7pnwomvl2ho6cioh",
+      "title": "Check for redirection",
+      "graphCoordinates": { "x": 5186.25, "y": 1824.59 },
+      "blocks": [
+        {
+          "id": "nq5d9hieum3x8ye83itl9m42",
+          "type": "Condition",
+          "items": [
+            {
+              "id": "i10pevki8u9v3iu07egd6g3n",
+              "outgoingEdgeId": "u0v8anyyc56lz5ifhkoqwggs",
+              "content": {
+                "comparisons": [
+                  {
+                    "id": "a3l6uj2fi7909fcex4scjf3j",
+                    "variableId": "vzwy1hvhckrjog6zslwwhj5ft",
+                    "comparisonOperator": "Is set"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fkz3bzqkzxjcpzvzzfzaffpo",
+      "title": "NOK - Data invalid",
+      "graphCoordinates": { "x": 4747.16, "y": 1874.33 },
+      "blocks": [
+        {
+          "id": "xh091s8p2mvvlrtcsc89qh3f",
+          "outgoingEdgeId": "mkt8wtjrcnqhobje6c8ut0x9",
+          "type": "text",
+          "content": {
+            "richText": [
+              {
+                "type": "p",
+                "children": [
+                  {
+                    "text": "Parece que houve algum problema ao criar sua solicitação. Desculpe-nos pelo incômodo."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dznbuu5gijs8koba890pbc4u",
+      "title": "Thank you 2",
+      "graphCoordinates": { "x": 4730.65, "y": 2129.8 },
+      "blocks": [
+        {
+          "id": "h2whe0ixp3cirjwf9b7pgrfv",
+          "type": "text",
+          "content": {
+            "richText": [
+              {
+                "type": "p",
+                "children": [
+                  { "text": "Por favor, tente novamente mais tarde. Obrigado." }
+                ]
               }
             ]
           }
@@ -567,14 +859,6 @@
       "to": {
         "groupId": "yyxsxp9pm7dawf5udxhs6dy7",
         "blockId": "l9zmuniywsi03cv9ul314kzj"
-      }
-    },
-    {
-      "id": "djc2bypqpft33v046q9dw2qe",
-      "from": { "blockId": "pi4mr5z5l5udo847odx1vw5u" },
-      "to": {
-        "groupId": "evyw39b8zasz3w5434ldxzxt",
-        "blockId": "g1dqj12oqd7xvwku8nh5zv6g"
       }
     },
     {
@@ -628,19 +912,6 @@
       }
     },
     {
-      "id": "bo4m4271dhd8kt00nqe4fhgb",
-      "from": { "blockId": "g1dqj12oqd7xvwku8nh5zv6g" },
-      "to": { "groupId": "ssk4vj2t0zger2uev4jpuo0f" }
-    },
-    {
-      "id": "yuuznivbxyent21o89ql9c5d",
-      "from": { "blockId": "wr800wuknh8cc0ozpn4iofki" },
-      "to": {
-        "groupId": "sht0mjuybepxd6f5tp94buoi",
-        "blockId": "z9p4oa2dbyxvvnvio5cxpndh"
-      }
-    },
-    {
       "id": "spdr0j03l2od8xvj275esf4z",
       "from": { "blockId": "z9p4oa2dbyxvvnvio5cxpndh" },
       "to": {
@@ -680,11 +951,6 @@
       }
     },
     {
-      "id": "xd3gh4px1sy9vjuso1o1qnkj",
-      "from": { "blockId": "wgw7pc1mecdxqq0zu6qlk6la" },
-      "to": { "groupId": "wkrkel1m2saukaujzrk4nh8f" }
-    },
-    {
       "id": "cg80rshhoujgahnqrz1mumy9",
       "from": { "blockId": "vu6pbbhovj558zwf75127zq5" },
       "to": {
@@ -693,12 +959,161 @@
       }
     },
     {
-      "id": "c2xtrmifjcyb8pzkov568i2t",
+      "id": "n07xr32davjqr1r6ya3xlo1u",
+      "from": { "blockId": "g1dqj12oqd7xvwku8nh5zv6g" },
+      "to": {
+        "groupId": "fei5710uscp9b9hu53bk70r1",
+        "blockId": "gksgm9hqvvblnwwe0yu8gpcr"
+      }
+    },
+    {
+      "id": "un3p0lrha4e1agxrda57ms1z",
+      "from": { "blockId": "pi4mr5z5l5udo847odx1vw5u" },
+      "to": {
+        "groupId": "acoxe7wz30kyuwm0za91grrn",
+        "blockId": "lhmbrmzd3b5em5hd8il2dxni"
+      }
+    },
+    {
+      "id": "nbt47ytssby6pykpmsf2p8tb",
+      "from": { "blockId": "lhmbrmzd3b5em5hd8il2dxni" },
+      "to": { "groupId": "ssk4vj2t0zger2uev4jpuo0f" }
+    },
+    {
+      "id": "hd7q73qbj8nstrb81kh2w10h",
+      "from": { "blockId": "iqnhvjqenkj31g0z0sq8r0pl" },
+      "to": {
+        "groupId": "sw82l2fzn9nhgxuolkv2sab6",
+        "blockId": "q9xndbvphnstcf1x6ptu6sth"
+      }
+    },
+    {
+      "id": "yls1e42blqkeqlhgzf3crogn",
+      "from": { "blockId": "wr800wuknh8cc0ozpn4iofki" },
+      "to": {
+        "groupId": "sht0mjuybepxd6f5tp94buoi",
+        "blockId": "z9p4oa2dbyxvvnvio5cxpndh"
+      }
+    },
+    {
+      "id": "rvc65x1lj70af6wtve7a838x",
+      "from": { "blockId": "suyf4vkigxj160j2f9aqz6u4" },
+      "to": { "groupId": "wkrkel1m2saukaujzrk4nh8f" }
+    },
+    {
+      "id": "bpsy6l0hnkqs353d3dlo58zn",
+      "from": { "blockId": "wgw7pc1mecdxqq0zu6qlk6la" },
+      "to": {
+        "groupId": "axkt1ttlqqayub8q7li0cm1a",
+        "blockId": "bcqxvsvzjwnpt540t681ezrd"
+      }
+    },
+    {
+      "id": "i1ssa4rsfh74flrpynrsstsu",
+      "from": { "blockId": "bcqxvsvzjwnpt540t681ezrd" },
+      "to": {
+        "groupId": "uhndmog16ig0m6sdvjt9qe4w",
+        "blockId": "suyf4vkigxj160j2f9aqz6u4"
+      }
+    },
+    {
+      "id": "qgpb1b12bqjyg97mh2w7kiv6",
       "from": { "blockId": "sgvdid3o5hi5ypkcwnpbtk3b" },
+      "to": { "groupId": "goznbksaf5vkbzyvvri09ryw" }
+    },
+    {
+      "id": "jsj158bhj0oyxd3g4ontsrf2",
+      "from": { "blockId": "gvdodxrfn9mkbpddmkvoiakx" },
+      "to": {
+        "groupId": "du1rez6jm71ui0gxx83i6u3p",
+        "blockId": "gff0o3ieko3zrhl2elqq5jb2"
+      }
+    },
+    {
+      "id": "klgv56eetjyl7h0bffqfg1eg",
+      "from": {
+        "blockId": "gff0o3ieko3zrhl2elqq5jb2",
+        "itemId": "u08dw2qsvaaep3h7qgwgm678"
+      },
       "to": { "groupId": "c58hp93mz9dn9nus4p45xkha" }
+    },
+    {
+      "id": "w2yj4k0wxngtm52u7xfjmsap",
+      "from": {
+        "blockId": "gff0o3ieko3zrhl2elqq5jb2",
+        "itemId": "oyjsji2g1q8o41x6sdq66ht3"
+      },
+      "to": {
+        "groupId": "bujs63xrki427b7k81u4335h",
+        "blockId": "vu6pbbhovj558zwf75127zq5"
+      }
+    },
+    {
+      "id": "h8pfb4at1xh729bbczydb2p0",
+      "from": {
+        "blockId": "gff0o3ieko3zrhl2elqq5jb2",
+        "itemId": "x95gddrlaq0fatuwjpi4edsk"
+      },
+      "to": {
+        "groupId": "fkz3bzqkzxjcpzvzzfzaffpo",
+        "blockId": "xh091s8p2mvvlrtcsc89qh3f"
+      }
+    },
+    {
+      "id": "u0v8anyyc56lz5ifhkoqwggs",
+      "from": {
+        "blockId": "nq5d9hieum3x8ye83itl9m42",
+        "itemId": "i10pevki8u9v3iu07egd6g3n"
+      },
+      "to": { "groupId": "b1vbeq29xmhdxi6bewx83iy5" }
+    },
+    {
+      "id": "mkt8wtjrcnqhobje6c8ut0x9",
+      "from": { "blockId": "xh091s8p2mvvlrtcsc89qh3f" },
+      "to": { "groupId": "dznbuu5gijs8koba890pbc4u" }
     }
   ],
   "variables": [
+    {
+      "id": "vewqpyy7duofctksy9on06yb8",
+      "name": "chatBotValidationMessage",
+      "isSessionVariable": true
+    },
+    {
+      "id": "vzr8ovdwvzrykmxhp01x46qh7",
+      "name": "chatBotCurrentSession",
+      "isSessionVariable": true
+    },
+    {
+      "id": "vxfw1j83tmpadp4a05s039szp",
+      "name": "validatedPayload",
+      "isSessionVariable": true
+    },
+    {
+      "id": "vka9kd8zvjfi8d87d8zm5icwx",
+      "name": "validateChatbotCode",
+      "isSessionVariable": true
+    },
+    {
+      "id": "vl13s1clp590vlc597313s05s",
+      "name": "selectedText",
+      "isSessionVariable": false
+    },
+    {
+      "id": "vzwy1hvhckrjog6zslwwhj5ft",
+      "name": "RedirectTypebotTicketURL",
+      "isSessionVariable": true
+    },
+    {
+      "id": "vgpdxvwh8yrzwrgmxzfjrbuyt",
+      "name": "mappedDepartment",
+      "isSessionVariable": false
+    },
+    {
+      "id": "do104jfmoclj4ea4n25cltmt",
+      "name": "DirectchatHostAPI",
+      "isSessionVariable": true
+    },
     {
       "id": "vhmq6epq6mb78oapzeskgqbw5",
       "name": "selectedPhone",
@@ -717,7 +1132,7 @@
     {
       "id": "vo7wi973aof8oyf4j9uysp49y",
       "name": "ChatFingerprint",
-      "isSessionVariable": true
+      "isSessionVariable": false
     },
     {
       "id": "vz7yvdv5g54p1byyrxmif2f1l",
@@ -727,7 +1142,7 @@
     {
       "id": "vz57mcm3hl9b6hm45soebh9p9",
       "name": "ChatHash",
-      "isSessionVariable": true
+      "isSessionVariable": false
     },
     {
       "id": "vv250sj1jdecmrt4wibtzazug",
@@ -766,24 +1181,24 @@
     },
     "customCss": ""
   },
-  "selectedThemeTemplateId": "aqua-glass",
+  "selectedThemeTemplateId": "cmg9ttg7d00018nzpmon0thj4",
   "settings": {
     "general": {
       "isBrandingEnabled": false,
       "isInputPrefillEnabled": true,
-      "rememberUser": { "isEnabled": true, "storage": "local" }
+      "rememberUser": { "isEnabled": true, "storage": "session" }
     },
     "metadata": {
       "favIconUrl": "data:image/svg+xml;utf8,<svg fill='%23ffffff' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc. --><path d='M224 352L196.8 52.3C194.2 24.2 216.3 0 244.6 0H534.1c21.1 0 36.4 20.1 30.9 40.4L558.5 64H400c-8.8 0-16 7.2-16 16s7.2 16 16 16H549.8l-17.5 64H400c-8.8 0-16 7.2-16 16s7.2 16 16 16H523.6l-17.5 64H400c-8.8 0-16 7.2-16 16s7.2 16 16 16h97.5L480 352H224zm-16 32H496c26.5 0 48 21.5 48 48v32c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V432c0-26.5 21.5-48 48-48zm144 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM147.5 30.7c10.8 6.7 15.3 21 10.6 33.4l-22 57.8c-4.2 10.9-14.5 17.6-25.3 16.4l-33.3-3.6c-13.6 42.2-13.6 88.4 0 130.7l33.3-3.6c10.9-1.2 21.2 5.5 25.3 16.4l22 57.8c4.7 12.4 .2 26.7-10.6 33.4l-44 27.2c-9.7 6-21.9 4.2-29.8-4.3C-24.6 286-24.6 114 73.7 7.8C81.6-.7 93.8-2.5 103.5 3.5l44 27.2z'/></svg>"
     }
   },
-  "createdAt": "2025-07-07T18:32:26.122Z",
-  "updatedAt": "2025-07-08T20:53:23.430Z",
+  "createdAt": "2025-10-06T15:21:18.748Z",
+  "updatedAt": "2025-10-06T15:21:18.748Z",
   "icon": null,
   "folderId": null,
-  "publicId": "my-typebot-demo",
+  "publicId": null,
   "customDomain": null,
-  "workspaceId": "cmctepb9k0000qq2fa4yx5wxe",
+  "workspaceId": "cmgf7hcqj000017sq3ovdfznn",
   "resultsTablePreferences": null,
   "isArchived": false,
   "isClosed": false,

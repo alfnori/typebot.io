@@ -14,7 +14,7 @@ x-typebot-common: &typebot-common
     REDIS_URL: redis://typebot-redis:6379
     #DATABASE_URL: mysql://typebot:typebot@typebot-db-mysql:3306/typebot
     DATABASE_URL: postgresql://postgres:typebot@typebot-db:5432/typebot
-    S3_ENDPOINT: http://typebot-minio:9000
+    S3_ENDPOINT: typebot-minio
 
 services:
   typebot-db:
