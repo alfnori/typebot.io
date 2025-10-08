@@ -47,6 +47,9 @@ snapshots
 .tsup
 
 .env.docker
+.env*
+!.env.example
+!.env.dev.example
 
 .partykit
 

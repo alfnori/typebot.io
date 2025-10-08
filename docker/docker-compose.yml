@@ -1,0 +1,87 @@
+x-typebot-common: &typebot-common
+  restart: always
+  depends_on:
+    typebot-redis:
+      condition: service_healthy
+    typebot-db:
+      condition: service_healthy
+  networks:
+    - typebot-network
+  env_file: .env
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  environment:
+    REDIS_URL: redis://typebot-redis:6379
+    #DATABASE_URL: mysql://typebot:typebot@typebot-db-mysql:3306/typebot
+    DATABASE_URL: postgresql://postgres:typebot@typebot-db:5432/typebot
+    S3_ENDPOINT: typebot-minio
+
+services:
+  typebot-db:
+    image: postgres:16
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=typebot
+      - POSTGRES_PASSWORD=typebot
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+    networks:
+      typebot-network:
+        # ipv4_address: 172.22.0.3
+
+  typebot-redis:
+    image: redis:alpine
+    restart: always
+    command: >
+      redis-server --bind 0.0.0.0 --appendonly no --protected-mode no --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    networks:
+      typebot-network:
+        # ipv4_address: 172.22.0.2
+
+  typebot-builder:
+    <<: *typebot-common
+    image: baptistearno/typebot-builder:3.8
+    ports:
+      - "3000:3000"
+    networks:
+      typebot-network:
+        # ipv4_address: 172.22.0.5
+
+  typebot-viewer:
+    <<: *typebot-common
+    image: baptistearno/typebot-viewer:3.8.0
+    ports:
+      - "3001:3000"
+    networks:
+      typebot-network:
+        # ipv4_address: 172.22.0.6
+
+networks:
+  typebot-network:
+    driver: bridge
+    attachable: true
+    # ipam:
+    #   config:
+    #     - subnet: 172.22.0.0/16
+    #       gateway: 172.22.0.1
+
+volumes:
+  db-data:
+  redis-data:

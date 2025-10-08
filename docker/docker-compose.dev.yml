@@ -1,0 +1,71 @@
+version: "3.3"
+services:
+  # typebot-db:
+  #   image: postgres:16
+  #   ports:
+  #     - "5432:5432"
+  #   restart: always
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_DB: "typebot"
+  #     POSTGRES_PASSWORD: "typebot"
+
+  typebot-db-mysql:
+    image: mysql:5.7.44
+    restart: always
+    container_name: typebot-db-mysql
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=typebot
+      - MYSQL_USER=typebot
+      - MYSQL_PASSWORD=typebot
+      - MYSQL_ROOT_PASSWORD=typebot
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
+    networks:
+      typebot_typebot-network:
+
+  typebot-minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    volumes:
+      - s3_data:/data
+    networks:
+      typebot_typebot-network:
+
+  # This service just make sure a bucket with the right policies is created
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - typebot-minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10;
+      /usr/bin/mc alias set minio http://typebot-minio:9000 minio minio123;
+      /usr/bin/mc mb --ignore-existing minio/typebot;
+      /usr/bin/mc anonymous set public minio/typebot/public;
+      exit 0;
+      "
+    networks:
+      - typebot_typebot-network
+
+volumes:
+  db_data:
+  s3_data:
+  mysql_data:
+
+networks:
+  typebot_typebot-network:
+    external: true
