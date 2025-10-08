@@ -7,19 +7,18 @@ import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import type { ZodLayoutMetadata } from "@typebot.io/zod";
 import Markdown, { type Components } from "react-markdown";
 import type { ZodTypeAny, z } from "zod";
-import { NumberInput, Textarea, TextInput } from "@/components/inputs";
+import { BasicAutocompleteInputWithVariableButton } from "@/components/inputs/BasicAutocompleteInput";
+import { BasicNumberInput } from "@/components/inputs/BasicNumberInput";
 import { BasicSelect } from "@/components/inputs/BasicSelect";
 import { CodeEditor } from "@/components/inputs/CodeEditor";
 import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
-import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
+import { Textarea } from "@/components/inputs/Textarea";
+import { TextInput } from "@/components/inputs/TextInput";
+import { VariablesCombobox } from "@/components/inputs/VariablesCombobox";
 import { PrimitiveList } from "@/components/PrimitiveList";
 import { TableList } from "@/components/TableList";
 import { TagsInput } from "@/components/TagsInput";
 import { getZodInnerSchema } from "../../helpers/getZodInnerSchema";
-import {
-  AutocompleteInput,
-  ForgeAutocompleteInput,
-} from "../ForgeAutocompleteInput";
 import { ForgeSelectInput } from "../ForgeSelectInput";
 import { ZodDiscriminatedUnionLayout } from "./ZodDiscriminatedUnionLayout";
 import { ZodObjectLayout } from "./ZodObjectLayout";
@@ -78,19 +77,26 @@ export const ZodFieldLayout = ({
 
   if (layout?.inputType === "variableDropdown") {
     return (
-      <VariableSearchInput
-        initialVariableId={data}
-        onSelectVariable={(variable) => onDataChange(variable?.id)}
-        placeholder={layout?.placeholder}
-        label={layout?.label}
-        moreInfoTooltip={layout.moreInfoTooltip}
-        helperText={
-          layout?.helperText ? (
+      <Field.Root>
+        {layout.label && (
+          <Field.Label>
+            {layout.label}
+            {layout.moreInfoTooltip && (
+              <MoreInfoTooltip>{layout.moreInfoTooltip}</MoreInfoTooltip>
+            )}
+          </Field.Label>
+        )}
+        <VariablesCombobox
+          initialVariableId={data}
+          onSelectVariable={(variable) => onDataChange(variable?.id)}
+          placeholder={layout?.placeholder}
+        />
+        {layout?.helperText && (
+          <Field.Description>
             <Markdown components={mdComponents}>{layout.helperText}</Markdown>
-          ) : undefined
-        }
-        width="full"
-      />
+          </Field.Description>
+        )}
+      </Field.Root>
     );
   }
 
@@ -162,22 +168,26 @@ export const ZodFieldLayout = ({
     case "ZodNumber":
     case "ZodUnion": {
       return (
-        <NumberInput
-          defaultValue={data ?? layout?.defaultValue}
-          label={layout?.label}
-          placeholder={layout?.placeholder}
-          helperText={
-            layout?.helperText ? (
+        <Field.Root>
+          {layout?.label && (
+            <Field.Label>
+              {layout.label}
+              {layout.moreInfoTooltip && (
+                <MoreInfoTooltip>{layout.moreInfoTooltip}</MoreInfoTooltip>
+              )}
+            </Field.Label>
+          )}
+          <BasicNumberInput
+            defaultValue={data ?? layout?.defaultValue}
+            onValueChange={onDataChange}
+            placeholder={layout?.placeholder}
+          />
+          {layout?.helperText && (
+            <Field.Description>
               <Markdown components={mdComponents}>{layout.helperText}</Markdown>
-            ) : undefined
-          }
-          isRequired={layout?.isRequired}
-          moreInfoTooltip={layout?.moreInfoTooltip}
-          onValueChange={onDataChange}
-          direction={layout?.direction}
-          width={width}
-          debounceTimeout={layout?.isDebounceDisabled ? 0 : undefined}
-        />
+            </Field.Description>
+          )}
+        </Field.Root>
       );
     }
     case "ZodBoolean": {
@@ -193,50 +203,33 @@ export const ZodFieldLayout = ({
     case "ZodString": {
       if (layout?.autoCompleteItems) {
         return (
-          <AutocompleteInput
-            items={layout.autoCompleteItems}
-            defaultValue={data ?? layout.defaultValue}
-            placeholder={layout.placeholder}
-            label={layout.label}
-            helperText={
-              layout?.helperText ? (
+          <Field.Root>
+            {layout.label && (
+              <Field.Label>
+                {layout.label}
+                {layout.moreInfoTooltip && (
+                  <MoreInfoTooltip>{layout.moreInfoTooltip}</MoreInfoTooltip>
+                )}
+              </Field.Label>
+            )}
+            <BasicAutocompleteInputWithVariableButton
+              items={layout.autoCompleteItems}
+              defaultValue={data ?? layout.defaultValue}
+              placeholder={layout.placeholder}
+              onChange={onDataChange}
+            />
+            {layout?.helperText && (
+              <Field.Description>
                 <Markdown components={mdComponents}>
                   {layout.helperText}
                 </Markdown>
-              ) : undefined
-            }
-            moreInfoTooltip={layout?.moreInfoTooltip}
-            onChange={onDataChange}
-            width={width}
-            withVariableButton={layout.withVariableButton ?? true}
-          />
+              </Field.Description>
+            )}
+          </Field.Root>
         );
       }
       if (layout?.fetcher) {
         if (!blockDef) return null;
-        if (layout.allowCustomText)
-          return (
-            <ForgeAutocompleteInput
-              defaultValue={data ?? layout.defaultValue}
-              placeholder={layout.placeholder}
-              fetcherId={layout.fetcher}
-              options={blockOptions}
-              blockDef={blockDef}
-              label={layout.label}
-              credentialsScope="workspace"
-              helperText={
-                layout?.helperText ? (
-                  <Markdown components={mdComponents}>
-                    {layout.helperText}
-                  </Markdown>
-                ) : undefined
-              }
-              moreInfoTooltip={layout?.moreInfoTooltip}
-              onChange={onDataChange}
-              width={width}
-              withVariableButton={layout.withVariableButton ?? true}
-            />
-          );
         return (
           <ForgeSelectInput
             defaultValue={data ?? layout.defaultValue}
@@ -285,26 +278,32 @@ export const ZodFieldLayout = ({
 
       if (layout?.inputType === "code")
         return (
-          <CodeEditor
-            defaultValue={data ?? layout?.defaultValue}
-            lang={layout.lang ?? "javascript"}
-            label={layout?.label}
-            placeholder={layout?.placeholder}
-            helperText={
-              layout?.helperText ? (
+          <Field.Root>
+            {layout.label && (
+              <Field.Label>
+                {layout.label}
+                {layout.moreInfoTooltip && (
+                  <MoreInfoTooltip>{layout.moreInfoTooltip}</MoreInfoTooltip>
+                )}
+              </Field.Label>
+            )}
+            <CodeEditor
+              defaultValue={data ?? layout?.defaultValue}
+              lang={layout.lang ?? "javascript"}
+              placeholder={layout?.placeholder}
+              withVariableButton={layout?.withVariableButton}
+              onChange={onDataChange}
+              debounceTimeout={layout?.isDebounceDisabled ? 0 : undefined}
+              withLineNumbers={true}
+            />
+            {layout?.helperText && (
+              <Field.Description>
                 <Markdown components={mdComponents}>
                   {layout.helperText}
                 </Markdown>
-              ) : undefined
-            }
-            isRequired={layout?.isRequired}
-            withVariableButton={layout?.withVariableButton}
-            moreInfoTooltip={layout.moreInfoTooltip}
-            onChange={onDataChange}
-            width={width}
-            debounceTimeout={layout?.isDebounceDisabled ? 0 : undefined}
-            withLineNumbers={true}
-          />
+              </Field.Description>
+            )}
+          </Field.Root>
         );
       return (
         <TextInput

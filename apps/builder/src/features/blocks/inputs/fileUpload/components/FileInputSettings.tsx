@@ -4,7 +4,6 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  FormLabel,
   Stack,
 } from "@chakra-ui/react";
 import { useTranslate } from "@tolgee/react";
@@ -16,11 +15,11 @@ import type { FileInputBlock } from "@typebot.io/blocks-inputs/file/schema";
 import { Field } from "@typebot.io/ui/components/Field";
 import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import type { Variable } from "@typebot.io/variables/schemas";
-import { TextInput } from "@/components/inputs";
 import { BasicSelect } from "@/components/inputs/BasicSelect";
 import { CodeEditor } from "@/components/inputs/CodeEditor";
 import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
-import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
+import { TextInput } from "@/components/inputs/TextInput";
+import { VariablesCombobox } from "@/components/inputs/VariablesCombobox";
 import { SwitchWithRelatedSettings } from "@/components/SwitchWithRelatedSettings";
 import { TagsInput } from "@/components/TagsInput";
 
@@ -122,21 +121,21 @@ export const FileInputSettings = ({ options, onOptionsChange }: Props) => {
         onCheckChange={handleMultipleFilesChange}
       />
 
-      <Stack>
-        <FormLabel mb="0" htmlFor="variable">
+      <Field.Root>
+        <Field.Label>
           {options?.isMultipleAllowed
             ? t("blocks.inputs.file.settings.saveMultipleUpload.label")
             : t("blocks.inputs.file.settings.saveSingleUpload.label")}
-        </FormLabel>
-        <VariableSearchInput
+        </Field.Label>
+        <VariablesCombobox
           initialVariableId={options?.variableId}
           onSelectVariable={handleVariableChange}
         />
-      </Stack>
+      </Field.Root>
 
       <Field.Root>
         <Field.Label>
-          Visibility:{" "}
+          Visibility:
           <MoreInfoTooltip>
             This setting determines who can see the uploaded files. "Public"
             means that anyone who has the link can see the files. "Private"
@@ -159,10 +158,10 @@ export const FileInputSettings = ({ options, onOptionsChange }: Props) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel as={Stack} spacing={4}>
-            <Stack>
-              <FormLabel mb="0">
+            <Field.Root>
+              <Field.Label>
                 {t("blocks.inputs.settings.placeholder.label")}
-              </FormLabel>
+              </Field.Label>
               <CodeEditor
                 lang="html"
                 onChange={handlePlaceholderLabelChange}
@@ -170,10 +169,9 @@ export const FileInputSettings = ({ options, onOptionsChange }: Props) => {
                   options?.labels?.placeholder ??
                   defaultFileInputOptions.labels.placeholder
                 }
-                height={"100px"}
                 withVariableButton={false}
               />
-            </Stack>
+            </Field.Root>
             <TextInput
               label={t("blocks.inputs.settings.button.label")}
               defaultValue={

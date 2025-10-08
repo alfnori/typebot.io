@@ -23,8 +23,9 @@ import type {
   VariableForTest,
 } from "@typebot.io/blocks-integrations/httpRequest/schema";
 import { Button } from "@typebot.io/ui/components/Button";
+import { Field } from "@typebot.io/ui/components/Field";
 import { useMemo, useState } from "react";
-import { NumberInput } from "@/components/inputs";
+import { BasicNumberInput } from "@/components/inputs/BasicNumberInput";
 import { BasicSelect } from "@/components/inputs/BasicSelect";
 import { CodeEditor } from "@/components/inputs/CodeEditor";
 import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
@@ -223,15 +224,16 @@ export const HttpRequestAdvancedConfigForm = ({
                       credentialsName="HTTP proxy"
                     />
                   )}
-                  <NumberInput
-                    direction="row"
-                    label="Timeout (s)"
-                    defaultValue={options?.timeout ?? defaultTimeout}
-                    min={1}
-                    max={maxTimeout}
-                    onValueChange={updateTimeout}
-                    withVariableButton={false}
-                  />
+                  <Field.Root className="flex-row">
+                    <Field.Label>Timeout (s)</Field.Label>
+                    <BasicNumberInput
+                      defaultValue={options?.timeout ?? defaultTimeout}
+                      min={1}
+                      max={maxTimeout}
+                      onValueChange={updateTimeout}
+                      withVariableButton={false}
+                    />
+                  </Field.Root>
                 </AccordionPanel>
               </AccordionItem>
               <AccordionItem>
