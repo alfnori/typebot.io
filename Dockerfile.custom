@@ -25,6 +25,9 @@ RUN apt-get update -qq \
   && bun --version
 
 # ================================================================
+# # 🧰 STEP 2 — BASE IMAGE (Node 18 + Bun)
+# # ================================================================
+# FROM node:18-bullseye-slim AS base
 # 🧰 STEP 2 — BASE IMAGE (Node 22 + Bun)
 # ================================================================
 FROM node:22-bullseye-slim AS base

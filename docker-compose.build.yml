@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile.custom
       args:
         - SCOPE=builder
+        # - DATABASE_PROVIDER=mysql
     restart: always
     ports:
       - "3000:3000"
