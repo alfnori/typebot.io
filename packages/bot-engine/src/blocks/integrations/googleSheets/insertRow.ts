@@ -1,10 +1,10 @@
 import type { GoogleSheetsInsertRowOptions } from "@typebot.io/blocks-integrations/googleSheets/schema";
 import type { SessionState } from "@typebot.io/chat-session/schemas";
+import { getGoogleSpreadsheet } from "@typebot.io/credentials/getGoogleSpreadsheet";
 import { parseUnknownError } from "@typebot.io/lib/parseUnknownError";
 import type { LogInSession } from "@typebot.io/logs/schemas";
 import type { SessionStore } from "@typebot.io/runtime-session-store";
 import type { ExecuteIntegrationResponse } from "../../../types";
-import { getAuthenticatedGoogleDoc } from "./helpers/getAuthenticatedGoogleDoc";
 import { parseNewRowObject } from "./helpers/parseNewRowObject";
 
 export const insertRow = async (
@@ -34,11 +34,17 @@ export const insertRow = async (
 
   const logs: LogInSession[] = [];
 
-  const doc = await getAuthenticatedGoogleDoc({
+  const docResponse = await getGoogleSpreadsheet({
     credentialsId: options.credentialsId,
     spreadsheetId: options.spreadsheetId,
     workspaceId: state.workspaceId,
   });
+
+  if (docResponse.type === "error")
+    return {
+      outgoingEdgeId,
+      logs: [docResponse.log],
+    };
 
   const parsedValues = parseNewRowObject(options.cellsToInsert, {
     variables,
@@ -46,12 +52,12 @@ export const insertRow = async (
   });
 
   try {
-    await doc.loadInfo();
-    const sheet = doc.sheetsById[Number(options.sheetId)];
+    await docResponse.spreadsheet.loadInfo();
+    const sheet = docResponse.spreadsheet.sheetsById[Number(options.sheetId)];
     await sheet.addRow(parsedValues);
     logs.push({
       status: "success",
-      description: `Succesfully inserted row in ${doc.title} > ${sheet.title}`,
+      description: `Succesfully inserted row in ${docResponse.spreadsheet.title} > ${sheet.title}`,
     });
   } catch (err) {
     logs.push(

@@ -1,5 +1,3 @@
-import { DropdownList } from "@/components/DropdownList";
-import { NumberInput } from "@/components/inputs";
 import { FormLabel, HStack, Stack } from "@chakra-ui/react";
 import {
   defaultBlur,
@@ -12,7 +10,8 @@ import {
 import { isChatContainerLight } from "@typebot.io/theme/helpers/isChatContainerLight";
 import type { ChatTheme, GeneralTheme } from "@typebot.io/theme/schemas";
 import { colors } from "@typebot.io/ui/colors";
-import React from "react";
+import { BasicNumberInput } from "@/components/inputs/BasicNumberInput";
+import { BasicSelect } from "@/components/inputs/BasicSelect";
 import { ContainerThemeForm } from "./ContainerThemeForm";
 
 type Props = {
@@ -63,20 +62,19 @@ export const ChatContainerForm = ({
           Max width:
         </FormLabel>
         <HStack>
-          <NumberInput
-            size="sm"
-            width="100px"
+          <BasicNumberInput
+            className="max-w-40"
             defaultValue={maxWidth}
             min={0}
             step={10}
             withVariableButton={false}
             onValueChange={updateMaxWidth}
           />
-          <DropdownList
+          <BasicSelect
             size="sm"
             items={["px", "%", "vh", "vw"]}
-            currentItem={maxWidthUnit}
-            onItemSelect={updateMaxWidthUnit}
+            value={maxWidthUnit}
+            onChange={updateMaxWidthUnit}
           />
         </HStack>
       </HStack>
@@ -86,20 +84,19 @@ export const ChatContainerForm = ({
           Max height:
         </FormLabel>
         <HStack>
-          <NumberInput
-            size="sm"
-            width="100px"
+          <BasicNumberInput
+            className="max-w-40"
             defaultValue={maxHeight}
             min={0}
             step={10}
             onValueChange={updateMaxHeight}
             withVariableButton={false}
           />
-          <DropdownList
+          <BasicSelect
             size="sm"
             items={["px", "%", "vh", "vw"]}
-            currentItem={maxHeightUnit}
-            onItemSelect={updateMaxHeightUnit}
+            value={maxHeightUnit}
+            onChange={updateMaxHeightUnit}
           />
         </HStack>
       </HStack>

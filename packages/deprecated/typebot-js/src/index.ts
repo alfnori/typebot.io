@@ -11,17 +11,17 @@ import { initContainer } from "./embedTypes/container";
 import { getPopupActions, initPopup } from "./embedTypes/popup";
 
 export {
+  close,
+  getBubbleActions,
+  getPopupActions,
+  hideMessage,
+  initBubble,
   initContainer,
   initPopup,
-  initBubble,
-  getPopupActions,
-  getBubbleActions,
   open,
-  close,
-  toggle,
-  showMessage,
-  hideMessage,
   setHiddenVariables,
+  showMessage,
+  toggle,
 };
 
 const defaultExports = {

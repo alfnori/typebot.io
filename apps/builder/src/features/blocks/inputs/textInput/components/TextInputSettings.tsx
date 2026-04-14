@@ -1,17 +1,17 @@
-import { DropdownList } from "@/components/DropdownList";
-import { SwitchWithRelatedSettings } from "@/components/SwitchWithRelatedSettings";
-import { TextInput } from "@/components/inputs";
-import { Select } from "@/components/inputs/Select";
-import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
-import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
 import { FormLabel, Stack } from "@chakra-ui/react";
 import { useTranslate } from "@tolgee/react";
 import { fileVisibilityOptions } from "@typebot.io/blocks-inputs/file/constants";
 import { defaultTextInputOptions } from "@typebot.io/blocks-inputs/text/constants";
 import type { TextInputBlock } from "@typebot.io/blocks-inputs/text/schema";
 import { inputModeOptions } from "@typebot.io/blocks-inputs/text/schema";
+import { Field } from "@typebot.io/ui/components/Field";
+import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import type { Variable } from "@typebot.io/variables/schemas";
-import React from "react";
+import { BasicSelect } from "@/components/inputs/BasicSelect";
+import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
+import { TextInput } from "@/components/inputs/TextInput";
+import { VariablesCombobox } from "@/components/inputs/VariablesCombobox";
+import { SwitchWithRelatedSettings } from "@/components/SwitchWithRelatedSettings";
 
 type Props = {
   options: TextInputBlock["options"];
@@ -48,7 +48,7 @@ export const TextInputSettings = ({ options, onOptionsChange }: Props) => {
     });
 
   const updateVisibility = (
-    visibility: (typeof fileVisibilityOptions)[number],
+    visibility: (typeof fileVisibilityOptions)[number] | undefined,
   ) =>
     onOptionsChange({
       ...options,
@@ -68,7 +68,7 @@ export const TextInputSettings = ({ options, onOptionsChange }: Props) => {
     });
 
   const updateAudioClipVisibility = (
-    visibility: (typeof fileVisibilityOptions)[number],
+    visibility: (typeof fileVisibilityOptions)[number] | undefined,
   ) =>
     onOptionsChange({
       ...options,
@@ -107,10 +107,11 @@ export const TextInputSettings = ({ options, onOptionsChange }: Props) => {
         <FormLabel mb="0" htmlFor="input-mode">
           Input mode
         </FormLabel>
-        <Select
-          selectedItem={options?.inputMode ?? "text"}
+        <BasicSelect
+          value={options?.inputMode}
+          defaultValue="text"
           items={inputModeOptions}
-          onSelect={updateInputMode}
+          onChange={updateInputMode}
           placeholder="Select input mode..."
         />
       </Stack>
@@ -122,25 +123,29 @@ export const TextInputSettings = ({ options, onOptionsChange }: Props) => {
         }
         onCheckChange={updateAudioClipEnabled}
       >
-        <Stack>
-          <FormLabel mb="0" htmlFor="variable">
-            Save the URL in a variable:
-          </FormLabel>
-          <VariableSearchInput
+        <Field.Root>
+          <Field.Label>Save the URL in a variable:</Field.Label>
+          <VariablesCombobox
             initialVariableId={options?.audioClip?.saveVariableId}
             onSelectVariable={updateAudioClipSaveVariableId}
           />
-        </Stack>
-        <DropdownList
-          label="Visibility:"
-          moreInfoTooltip='This setting determines who can see the uploaded files. "Public" means that anyone who has the link can see the files. "Private" means that only a members of this workspace can see the files.'
-          currentItem={
-            options?.audioClip?.visibility ??
-            defaultTextInputOptions.audioClip.visibility
-          }
-          onItemSelect={updateAudioClipVisibility}
-          items={fileVisibilityOptions}
-        />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>
+            Visibility:
+            <MoreInfoTooltip>
+              This setting determines who can see the uploaded files. "Public"
+              means that anyone who has the link can see the files. "Private"
+              means that only a members of this workspace can see the files.
+            </MoreInfoTooltip>
+          </Field.Label>
+          <BasicSelect
+            value={options?.audioClip?.visibility}
+            defaultValue={defaultTextInputOptions.audioClip.visibility}
+            onChange={updateAudioClipVisibility}
+            items={fileVisibilityOptions}
+          />
+        </Field.Root>
       </SwitchWithRelatedSettings>
       <SwitchWithRelatedSettings
         label={"Allow attachments"}
@@ -150,35 +155,39 @@ export const TextInputSettings = ({ options, onOptionsChange }: Props) => {
         }
         onCheckChange={updateAttachmentsEnabled}
       >
-        <Stack>
-          <FormLabel mb="0" htmlFor="variable">
-            Save the URLs in a variable:
-          </FormLabel>
-          <VariableSearchInput
+        <Field.Root>
+          <Field.Label>Save the URLs in a variable:</Field.Label>
+          <VariablesCombobox
             initialVariableId={options?.attachments?.saveVariableId}
             onSelectVariable={updateAttachmentsSaveVariableId}
           />
-        </Stack>
-        <DropdownList
-          label="Visibility:"
-          moreInfoTooltip='This setting determines who can see the uploaded files. "Public" means that anyone who has the link can see the files. "Private" means that only a members of this workspace can see the files.'
-          currentItem={
-            options?.attachments?.visibility ??
-            defaultTextInputOptions.attachments.visibility
-          }
-          onItemSelect={updateVisibility}
-          items={fileVisibilityOptions}
-        />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>
+            Visibility:
+            <MoreInfoTooltip>
+              This setting determines who can see the uploaded files. "Public"
+              means that anyone who has the link can see the files. "Private"
+              means that only a members of this workspace can see the files.
+            </MoreInfoTooltip>
+          </Field.Label>
+          <BasicSelect
+            value={options?.attachments?.visibility}
+            defaultValue={defaultTextInputOptions.attachments.visibility}
+            onChange={updateVisibility}
+            items={fileVisibilityOptions}
+          />
+        </Field.Root>
       </SwitchWithRelatedSettings>
-      <Stack>
-        <FormLabel mb="0" htmlFor="variable">
+      <Field.Root>
+        <Field.Label>
           {t("blocks.inputs.settings.saveAnswer.label")}
-        </FormLabel>
-        <VariableSearchInput
+        </Field.Label>
+        <VariablesCombobox
           initialVariableId={options?.variableId}
           onSelectVariable={updateVariableId}
         />
-      </Stack>
+      </Field.Root>
     </Stack>
   );
 };

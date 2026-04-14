@@ -1,11 +1,12 @@
-import { DropdownList } from "@/components/DropdownList";
-import { TextLink } from "@/components/TextLink";
-import { Textarea } from "@/components/inputs";
-import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
-import { FormControl, FormLabel, Stack, Text } from "@chakra-ui/react";
+import { Stack, Text } from "@chakra-ui/react";
 import { openAIVoices } from "@typebot.io/blocks-integrations/openai/constants";
 import type { CreateSpeechOpenAIOptions } from "@typebot.io/blocks-integrations/openai/schema";
+import { Field } from "@typebot.io/ui/components/Field";
 import type { Variable } from "@typebot.io/variables/schemas";
+import { BasicSelect } from "@/components/inputs/BasicSelect";
+import { Textarea } from "@/components/inputs/Textarea";
+import { VariablesCombobox } from "@/components/inputs/VariablesCombobox";
+import { TextLink } from "@/components/TextLink";
 import { ModelsDropdown } from "../ModelsDropdown";
 
 const apiReferenceUrl =
@@ -34,7 +35,7 @@ export const OpenAICreateSpeechSettings = ({
     });
   };
 
-  const updateVoice = (voice: (typeof openAIVoices)[number]) => {
+  const updateVoice = (voice: (typeof openAIVoices)[number] | undefined) => {
     onOptionsChange({
       ...options,
       voice,
@@ -74,23 +75,23 @@ export const OpenAICreateSpeechSettings = ({
             onChange={updateInput}
             label="Input:"
           />
-          <FormControl>
-            <FormLabel>Voice:</FormLabel>
-            <DropdownList
-              currentItem={options.voice}
-              onItemSelect={updateVoice}
+          <Field.Root>
+            <Field.Label>Voice:</Field.Label>
+            <BasicSelect
+              value={options.voice}
+              onChange={updateVoice}
               items={openAIVoices}
               placeholder="Select a voice"
-              w="full"
+              className="w-full"
             />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Save URL:</FormLabel>
-            <VariableSearchInput
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>Save URL:</Field.Label>
+            <VariablesCombobox
               initialVariableId={options.saveUrlInVariableId}
               onSelectVariable={updateSaveUrlInVariableId}
             />
-          </FormControl>
+          </Field.Root>
         </>
       )}
     </Stack>

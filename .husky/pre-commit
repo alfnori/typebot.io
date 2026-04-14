@@ -1,1 +1,11 @@
+#!/usr/bin/env sh
+set -e
+
+# Ensure the Node version from `.nvmrc` is used when running hooks.
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+  # shellcheck disable=SC1091
+  . "$HOME/.nvm/nvm.sh"
+  nvm use --silent >/dev/null
+fi
+
 bun pre-commit

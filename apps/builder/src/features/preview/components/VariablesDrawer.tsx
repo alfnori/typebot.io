@@ -1,21 +1,9 @@
-import { MoreHorizontalIcon, PlusIcon, TrashIcon } from "@/components/icons";
-import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
 import {
-  CloseButton,
-  Editable,
-  EditableInput,
-  EditablePreview,
   Fade,
   Flex,
-  HStack,
   Heading,
-  IconButton,
+  HStack,
   Input,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-  Portal,
   SlideFade,
   Stack,
   useColorModeValue,
@@ -27,10 +15,18 @@ import { LogicBlockType } from "@typebot.io/blocks-logic/constants";
 import { sessionOnlySetVariableOptions } from "@typebot.io/blocks-logic/setVariable/constants";
 import type { SetVariableBlock } from "@typebot.io/blocks-logic/setVariable/schema";
 import { isNotEmpty } from "@typebot.io/lib/utils";
+import { Button } from "@typebot.io/ui/components/Button";
+import { Popover } from "@typebot.io/ui/components/Popover";
+import { Cancel01Icon } from "@typebot.io/ui/icons/Cancel01Icon";
+import { TrashIcon } from "@typebot.io/ui/icons/TrashIcon";
 import type { Variable } from "@typebot.io/variables/schemas";
 import { useDrag } from "@use-gesture/react";
 import { type FormEvent, useState } from "react";
-import { toast } from "sonner";
+import { MoreHorizontalIcon, PlusIcon } from "@/components/icons";
+import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
+import { SingleLineEditable } from "@/components/SingleLineEditable";
+import { useOpenControls } from "@/hooks/useOpenControls";
+import { toast } from "@/lib/toast";
 import { headerHeight } from "../../editor/constants";
 import { useTypebot } from "../../editor/providers/TypebotProvider";
 import { ResizeHandle } from "./ResizeHandle";
@@ -38,6 +34,7 @@ import { ResizeHandle } from "./ResizeHandle";
 type Props = {
   onClose: () => void;
 };
+
 export const VariablesDrawer = ({ onClose }: Props) => {
   const { typebot, createVariable, updateVariable, deleteVariable } =
     useTypebot();
@@ -61,7 +58,7 @@ export const VariablesDrawer = ({ onClose }: Props) => {
 
   const handleCreateSubmit = (e: FormEvent) => {
     e.preventDefault();
-    toast.success("Variable created");
+    toast({ description: "Variable created", type: "success" });
     setSearchValue("");
     createVariable({
       id: createId(),
@@ -103,7 +100,14 @@ export const VariablesDrawer = ({ onClose }: Props) => {
       </Fade>
 
       <Stack w="full" spacing="4">
-        <CloseButton pos="absolute" right="1rem" top="1rem" onClick={onClose} />
+        <Button
+          className="absolute right-2 top-2"
+          onClick={onClose}
+          variant="secondary"
+          size="icon"
+        >
+          <Cancel01Icon />
+        </Button>
         <Heading fontSize="md">Variables</Heading>
         <HStack as="form" onSubmit={handleCreateSubmit}>
           <Input
@@ -122,13 +126,9 @@ export const VariablesDrawer = ({ onClose }: Props) => {
             offsetY={0}
             offsetX={10}
           >
-            <IconButton
-              icon={<PlusIcon />}
-              aria-label="Create"
-              type="submit"
-              colorScheme="orange"
-              flexShrink={0}
-            />
+            <Button aria-label="Create" type="submit" size="icon">
+              <PlusIcon />
+            </Button>
           </SlideFade>
         </HStack>
 
@@ -159,6 +159,7 @@ const VariableItem = ({
   onDelete: () => void;
   setVariableAndInputBlocks: (InputBlock | SetVariableBlock)[];
 }) => {
+  const settingsPopoverControls = useOpenControls();
   const isSessionOnly = setVariableAndInputBlocks.some(
     (b) =>
       b.type === LogicBlockType.SET_VARIABLE &&
@@ -173,58 +174,47 @@ const VariableItem = ({
   );
 
   return (
-    <HStack justifyContent="space-between">
-      <Editable
+    <HStack justifyContent="space-between" pl={1}>
+      <SingleLineEditable
         defaultValue={variable.name}
-        onSubmit={(name) => onChange({ name })}
-        minWidth={0}
-      >
-        <EditablePreview
-          px="2"
-          noOfLines={1}
-          cursor="text"
-          _hover={{
-            bg: useColorModeValue("gray.100", "gray.700"),
-          }}
-        />
-        <EditableInput ml="1" pl="1" />
-      </Editable>
+        onValueCommit={(name) => onChange({ name })}
+      />
 
       <HStack>
         {!isSessionOnly && !isLinkedToAnswer && (
-          <Popover isLazy>
-            <PopoverTrigger>
-              <IconButton
-                icon={<MoreHorizontalIcon />}
-                aria-label={"Settings"}
-                size="sm"
+          <Popover.Root {...settingsPopoverControls}>
+            <Popover.TriggerButton
+              aria-label={"Settings"}
+              size="icon"
+              variant="secondary"
+              className="size-7"
+            >
+              <MoreHorizontalIcon />
+            </Popover.TriggerButton>
+            <Popover.Popup>
+              <SwitchWithLabel
+                label="Save in results"
+                moreInfoContent="Check this option if you want to save the variable value in the typebot Results table."
+                initialValue={!variable.isSessionVariable}
+                onCheckChange={() =>
+                  onChange({
+                    ...variable,
+                    isSessionVariable: !variable.isSessionVariable,
+                  })
+                }
               />
-            </PopoverTrigger>
-            <Portal>
-              <PopoverContent>
-                <PopoverBody>
-                  <SwitchWithLabel
-                    label="Save in results"
-                    moreInfoContent="Check this option if you want to save the variable value in the typebot Results table."
-                    initialValue={!variable.isSessionVariable}
-                    onCheckChange={() =>
-                      onChange({
-                        ...variable,
-                        isSessionVariable: !variable.isSessionVariable,
-                      })
-                    }
-                  />
-                </PopoverBody>
-              </PopoverContent>
-            </Portal>
-          </Popover>
+            </Popover.Popup>
+          </Popover.Root>
         )}
-        <IconButton
-          icon={<TrashIcon />}
-          onClick={onDelete}
+        <Button
           aria-label="Delete"
-          size="sm"
-        />
+          size="icon"
+          variant="secondary"
+          onClick={onDelete}
+          className="size-7"
+        >
+          <TrashIcon />
+        </Button>
       </HStack>
     </HStack>
   );

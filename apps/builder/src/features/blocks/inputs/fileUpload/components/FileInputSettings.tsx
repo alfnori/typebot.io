@@ -1,19 +1,9 @@
-import { DropdownList } from "@/components/DropdownList";
-import { MoreInfoTooltip } from "@/components/MoreInfoTooltip";
-import { SwitchWithRelatedSettings } from "@/components/SwitchWithRelatedSettings";
-import { TagsInput } from "@/components/TagsInput";
-import { TextInput } from "@/components/inputs";
-import { CodeEditor } from "@/components/inputs/CodeEditor";
-import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
-import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
 import {
   Accordion,
   AccordionButton,
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  FormControl,
-  FormLabel,
   Stack,
 } from "@chakra-ui/react";
 import { useTranslate } from "@tolgee/react";
@@ -22,8 +12,16 @@ import {
   fileVisibilityOptions,
 } from "@typebot.io/blocks-inputs/file/constants";
 import type { FileInputBlock } from "@typebot.io/blocks-inputs/file/schema";
+import { Field } from "@typebot.io/ui/components/Field";
+import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import type { Variable } from "@typebot.io/variables/schemas";
-import React from "react";
+import { BasicSelect } from "@/components/inputs/BasicSelect";
+import { CodeEditor } from "@/components/inputs/CodeEditor";
+import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
+import { TextInput } from "@/components/inputs/TextInput";
+import { VariablesCombobox } from "@/components/inputs/VariablesCombobox";
+import { SwitchWithRelatedSettings } from "@/components/SwitchWithRelatedSettings";
+import { TagsInput } from "@/components/TagsInput";
 
 type Props = {
   options: FileInputBlock["options"];
@@ -73,7 +71,7 @@ export const FileInputSettings = ({ options, onOptionsChange }: Props) => {
     onOptionsChange({ ...options, labels: { ...options?.labels, skip } });
 
   const updateVisibility = (
-    visibility: (typeof fileVisibilityOptions)[number],
+    visibility: (typeof fileVisibilityOptions)[number] | undefined,
   ) => onOptionsChange({ ...options, visibility });
 
   const updateSingleFileSuccessLabel = (single: string) =>
@@ -123,26 +121,35 @@ export const FileInputSettings = ({ options, onOptionsChange }: Props) => {
         onCheckChange={handleMultipleFilesChange}
       />
 
-      <Stack>
-        <FormLabel mb="0" htmlFor="variable">
+      <Field.Root>
+        <Field.Label>
           {options?.isMultipleAllowed
             ? t("blocks.inputs.file.settings.saveMultipleUpload.label")
             : t("blocks.inputs.file.settings.saveSingleUpload.label")}
-        </FormLabel>
-        <VariableSearchInput
+        </Field.Label>
+        <VariablesCombobox
           initialVariableId={options?.variableId}
           onSelectVariable={handleVariableChange}
         />
-      </Stack>
+      </Field.Root>
 
-      <DropdownList
-        label="Visibility:"
-        direction="row"
-        moreInfoTooltip='This setting determines who can see the uploaded files. "Public" means that anyone who has the link can see the files. "Private" means that only a member of this workspace can see the files. Check the docs for more information.'
-        currentItem={options?.visibility ?? defaultFileInputOptions.visibility}
-        onItemSelect={updateVisibility}
-        items={fileVisibilityOptions}
-      />
+      <Field.Root>
+        <Field.Label>
+          Visibility:
+          <MoreInfoTooltip>
+            This setting determines who can see the uploaded files. "Public"
+            means that anyone who has the link can see the files. "Private"
+            means that only a member of this workspace can see the files. Check
+            the docs for more information.
+          </MoreInfoTooltip>
+        </Field.Label>
+        <BasicSelect
+          value={options?.visibility}
+          defaultValue={defaultFileInputOptions.visibility}
+          onChange={updateVisibility}
+          items={fileVisibilityOptions}
+        />
+      </Field.Root>
 
       <Accordion allowToggle>
         <AccordionItem>
@@ -151,10 +158,10 @@ export const FileInputSettings = ({ options, onOptionsChange }: Props) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel as={Stack} spacing={4}>
-            <Stack>
-              <FormLabel mb="0">
+            <Field.Root>
+              <Field.Label>
                 {t("blocks.inputs.settings.placeholder.label")}
-              </FormLabel>
+              </Field.Label>
               <CodeEditor
                 lang="html"
                 onChange={handlePlaceholderLabelChange}
@@ -162,10 +169,9 @@ export const FileInputSettings = ({ options, onOptionsChange }: Props) => {
                   options?.labels?.placeholder ??
                   defaultFileInputOptions.labels.placeholder
                 }
-                height={"100px"}
                 withVariableButton={false}
               />
-            </Stack>
+            </Field.Root>
             <TextInput
               label={t("blocks.inputs.settings.button.label")}
               defaultValue={

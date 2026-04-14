@@ -1,17 +1,17 @@
-import { MoreInfoTooltip } from "@/components/MoreInfoTooltip";
 import {
-  Button,
-  HStack,
+  chakra,
   Heading,
+  HStack,
   Stack,
   Text,
-  chakra,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { T, useTranslate } from "@tolgee/react";
 import { prices } from "@typebot.io/billing/constants";
 import { formatPrice } from "@typebot.io/billing/helpers/formatPrice";
 import { Plan } from "@typebot.io/prisma/enum";
+import { Button } from "@typebot.io/ui/components/Button";
+import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import { FeaturesList } from "./FeaturesList";
 
 type Props = {
@@ -72,7 +72,7 @@ export const StarterPlanPricingCard = ({
           features={[
             t("billing.pricingCard.starter.includedSeats"),
             <Stack key="starter-chats" spacing={0}>
-              <HStack>
+              <HStack gap={0}>
                 <Text>2,000 {t("billing.pricingCard.chatsPerMonth")}</Text>
                 <MoreInfoTooltip>
                   {t("billing.pricingCard.chatsTooltip")}
@@ -93,11 +93,9 @@ export const StarterPlanPricingCard = ({
         />
       </Stack>
       <Button
-        colorScheme="orange"
-        variant="outline"
+        variant="secondary"
         onClick={onPayClick}
-        isLoading={isLoading}
-        isDisabled={currentPlan === Plan.STARTER}
+        disabled={isLoading || currentPlan === Plan.STARTER}
       >
         {getButtonLabel()}
       </Button>

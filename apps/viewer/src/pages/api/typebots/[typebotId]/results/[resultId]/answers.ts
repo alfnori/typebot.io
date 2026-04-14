@@ -5,7 +5,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { uploadedFiles, ...answer } = (
       typeof req.body === "string" ? JSON.parse(req.body) : req.body
     ) as Prisma.Answer & { uploadedFiles: string[] };

@@ -1,10 +1,10 @@
-import { iconButtonVariants } from "@/components/IconButton";
-import { TextLink } from "@/components/link";
-import { ChevronDownIcon } from "@typebot.io/ui/icons/ChevronDownIcon";
-import { ChevronUpIcon } from "@typebot.io/ui/icons/ChevronUpIcon";
+import { ArrowDown01Icon } from "@typebot.io/ui/icons/ArrowDown01Icon";
+import { ArrowUp01Icon } from "@typebot.io/ui/icons/ArrowUp01Icon";
 import { cn } from "@typebot.io/ui/lib/cn";
 import { motion } from "motion/react";
 import { type ReactNode, useState } from "react";
+import { iconButtonVariants } from "@/components/IconButton";
+import { TextLink } from "@/components/link";
 import { discordUrl, docsUrl } from "../../../constants";
 
 const data = [
@@ -88,6 +88,8 @@ const data = [
     title: "How secure is Typebot, and how do you handle data privacy?",
     content: (
       <p>
+        Typebot is ISO 27001 certified, demonstrating our commitment to
+        maintaining the highest standards of information security management.
         Our guiding principle is to collect only what we need to provide the
         best service to you. We use a select number of trusted external service
         providers for certain service offerings.
@@ -120,7 +122,10 @@ export const Faq = () => {
 const Question = ({
   title,
   children,
-}: { title: string; children: ReactNode }) => {
+}: {
+  title: string;
+  children: ReactNode;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -136,7 +141,7 @@ const Question = ({
             "flex-shrink-0 [&_svg]:size-6",
           )}
         >
-          {isOpen ? <ChevronUpIcon className="size-8" /> : <ChevronDownIcon />}
+          {isOpen ? <ArrowUp01Icon className="size-8" /> : <ArrowDown01Icon />}
         </span>
       </summary>
       <motion.div

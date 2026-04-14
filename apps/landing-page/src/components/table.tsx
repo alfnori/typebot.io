@@ -1,6 +1,5 @@
-import * as React from "react";
-
 import { cn } from "@typebot.io/ui/lib/cn";
+import * as React from "react";
 
 const TableRoot = React.forwardRef<
   HTMLDivElement,
@@ -115,13 +114,13 @@ const TableCaption = React.forwardRef<
 TableCaption.displayName = "TableCaption";
 
 export {
-  TableRoot,
   Table,
-  TableHeader,
   TableBody,
+  TableCaption,
+  TableCell,
   TableFooter,
   TableHead,
+  TableHeader,
+  TableRoot,
   TableRow,
-  TableCell,
-  TableCaption,
 };

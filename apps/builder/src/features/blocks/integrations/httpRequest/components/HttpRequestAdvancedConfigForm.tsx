@@ -1,26 +1,18 @@
-import { DropdownList } from "@/components/DropdownList";
-import { TableList, type TableListItemProps } from "@/components/TableList";
-import { NumberInput } from "@/components/inputs";
-import { CodeEditor } from "@/components/inputs/CodeEditor";
-import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
-import { useTypebot } from "@/features/editor/providers/TypebotProvider";
-import { toast } from "@/lib/toast";
 import {
   Accordion,
   AccordionButton,
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Button,
   HStack,
   Stack,
   Text,
 } from "@chakra-ui/react";
 import {
-  HttpMethod,
   defaultHttpRequestAttributes,
   defaultHttpRequestBlockOptions,
   defaultTimeout,
+  HttpMethod,
   maxTimeout,
 } from "@typebot.io/blocks-integrations/httpRequest/constants";
 import type {
@@ -30,7 +22,17 @@ import type {
   ResponseVariableMapping,
   VariableForTest,
 } from "@typebot.io/blocks-integrations/httpRequest/schema";
+import { Button } from "@typebot.io/ui/components/Button";
+import { Field } from "@typebot.io/ui/components/Field";
 import { useMemo, useState } from "react";
+import { BasicNumberInput } from "@/components/inputs/BasicNumberInput";
+import { BasicSelect } from "@/components/inputs/BasicSelect";
+import { CodeEditor } from "@/components/inputs/CodeEditor";
+import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
+import { TableList, type TableListItemProps } from "@/components/TableList";
+import { CredentialsDropdown } from "@/features/credentials/components/CredentialsDropdown";
+import { useTypebot } from "@/features/editor/providers/TypebotProvider";
+import { toast } from "@/lib/toast";
 import { computeDeepKeysMappingSuggestionList } from "../helpers/computeDeepKeysMappingSuggestionList";
 import { convertVariablesForTestToVariables } from "../helpers/convertVariablesForTestToVariables";
 import { executeHttpRequest } from "../queries/executeHttpRequestQuery";
@@ -60,7 +62,7 @@ export const HttpRequestAdvancedConfigForm = ({
   const [testResponse, setTestResponse] = useState<string>();
   const [responseKeys, setResponseKeys] = useState<string[]>([]);
 
-  const updateMethod = (method: HttpMethod) =>
+  const updateMethod = (method: HttpMethod | undefined) =>
     onHttpRequestChange({ ...httpRequest, method });
 
   const updateQueryParams = (queryParams: KeyValue[]) =>
@@ -116,6 +118,9 @@ export const HttpRequestAdvancedConfigForm = ({
     [responseKeys],
   );
 
+  const updateProxyCredentialsId = (proxyCredentialsId: string | undefined) =>
+    onOptionsChange({ ...options, proxyCredentialsId });
+
   const isCustomBody =
     options?.isCustomBody ?? defaultHttpRequestBlockOptions.isCustomBody;
 
@@ -139,12 +144,10 @@ export const HttpRequestAdvancedConfigForm = ({
             />
             <HStack justify="space-between">
               <Text>Method:</Text>
-              <DropdownList
-                currentItem={
-                  (httpRequest?.method ??
-                    defaultHttpRequestAttributes.method) as HttpMethod
-                }
-                onItemSelect={updateMethod}
+              <BasicSelect
+                value={httpRequest?.method}
+                defaultValue={defaultHttpRequestAttributes.method}
+                onChange={updateMethod}
                 items={Object.values(HttpMethod)}
               />
             </HStack>
@@ -206,15 +209,31 @@ export const HttpRequestAdvancedConfigForm = ({
                   Advanced parameters
                   <AccordionIcon />
                 </AccordionButton>
-                <AccordionPanel pt="4">
-                  <NumberInput
-                    label="Timeout (s)"
-                    defaultValue={options?.timeout ?? defaultTimeout}
-                    min={1}
-                    max={maxTimeout}
-                    onValueChange={updateTimeout}
-                    withVariableButton={false}
-                  />
+                <AccordionPanel pt="4" as={Stack}>
+                  {typebot && (
+                    <CredentialsDropdown
+                      type="http proxy"
+                      hideIfNoCredentials
+                      scope={{
+                        type: "workspace",
+                        workspaceId: typebot.workspaceId,
+                      }}
+                      currentCredentialsId={options?.proxyCredentialsId}
+                      onCredentialsSelect={updateProxyCredentialsId}
+                      onCreateNewClick={undefined}
+                      credentialsName="HTTP proxy"
+                    />
+                  )}
+                  <Field.Root className="flex-row">
+                    <Field.Label>Timeout (s)</Field.Label>
+                    <BasicNumberInput
+                      defaultValue={options?.timeout ?? defaultTimeout}
+                      min={1}
+                      max={maxTimeout}
+                      onValueChange={updateTimeout}
+                      withVariableButton={false}
+                    />
+                  </Field.Root>
                 </AccordionPanel>
               </AccordionItem>
               <AccordionItem>
@@ -238,11 +257,7 @@ export const HttpRequestAdvancedConfigForm = ({
       </Accordion>
 
       {httpRequest?.url && (
-        <Button
-          onClick={executeTestRequest}
-          colorScheme="orange"
-          isLoading={isTestResponseLoading}
-        >
+        <Button onClick={executeTestRequest} disabled={isTestResponseLoading}>
           Test the request
         </Button>
       )}

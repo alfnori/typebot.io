@@ -1,4 +1,5 @@
 import {
+  ChatProvider,
   CollaborationType,
   GraphNavigation,
   Plan,
@@ -12,11 +13,12 @@ const DbNull = Prisma.DbNull;
 const PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError;
 
 export {
-  WorkspaceRole,
-  Plan,
+  ChatProvider,
   CollaborationType,
+  DbNull,
   GraphNavigation,
   JsonNull,
-  DbNull,
+  Plan,
   PrismaClientKnownRequestError,
+  WorkspaceRole,
 };

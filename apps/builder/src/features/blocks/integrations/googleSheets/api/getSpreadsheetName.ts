@@ -1,10 +1,9 @@
-import { isReadWorkspaceFobidden } from "@/features/workspace/helpers/isReadWorkspaceFobidden";
-import { authenticatedProcedure } from "@/helpers/server/trpc";
 import { TRPCError } from "@trpc/server";
-import { getAuthenticatedGoogleClient } from "@typebot.io/credentials/getAuthenticatedGoogleClient";
+import { getGoogleSpreadsheet } from "@typebot.io/credentials/getGoogleSpreadsheet";
 import prisma from "@typebot.io/prisma";
 import { z } from "@typebot.io/zod";
-import { GoogleSpreadsheet } from "google-spreadsheet";
+import { isReadWorkspaceFobidden } from "@/features/workspace/helpers/isReadWorkspaceFobidden";
+import { authenticatedProcedure } from "@/helpers/server/trpc";
 
 export const getSpreadsheetName = authenticatedProcedure
   .input(
@@ -51,24 +50,23 @@ export const getSpreadsheetName = authenticatedProcedure
           message: "Credentials not found",
         });
 
-      const client = await getAuthenticatedGoogleClient(
-        credentials.id,
-        workspaceId,
-      );
-
-      if (!client)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Google client could not be initialized",
+      try {
+        const googleSheetResponse = await getGoogleSpreadsheet({
+          credentialsId: credentials.id,
+          spreadsheetId,
+          workspaceId,
         });
 
-      try {
-        const googleSheet = new GoogleSpreadsheet(spreadsheetId, client);
+        if (googleSheetResponse.type === "error")
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: googleSheetResponse.log.description,
+          });
 
-        await googleSheet.loadInfo();
+        await googleSheetResponse.spreadsheet.loadInfo();
 
-        return { name: googleSheet.title };
-      } catch (e) {
+        return { name: googleSheetResponse.spreadsheet.title };
+      } catch (_e) {
         return { name: "" };
       }
     },

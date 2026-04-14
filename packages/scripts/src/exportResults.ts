@@ -1,4 +1,3 @@
-import { writeFileSync } from "fs";
 import * as p from "@clack/prompts";
 import { parseUniqueKey } from "@typebot.io/lib/parseUniqueKey";
 import { byId } from "@typebot.io/lib/utils";
@@ -14,12 +13,10 @@ import {
 import type { TypebotV6 } from "@typebot.io/typebot/schemas/typebot";
 import { z } from "@typebot.io/zod";
 import cliProgress from "cli-progress";
+import { writeFileSync } from "fs";
 import { unparse } from "papaparse";
-import { promptAndSetEnvironment } from "./utils";
 
 const exportResults = async () => {
-  await promptAndSetEnvironment("production");
-
   const typebotId = (await p.text({
     message: "Typebot ID?",
   })) as string;

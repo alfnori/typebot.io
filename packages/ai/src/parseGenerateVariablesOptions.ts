@@ -39,6 +39,11 @@ export const variablesToExtractSchema = option
         .extend(extractInfoBaseShape),
       option
         .object({
+          type: option.literal("array"),
+        })
+        .extend(extractInfoBaseShape),
+      option
+        .object({
           type: option.literal("enum"),
           values: option
             .array(option.string)
@@ -69,7 +74,6 @@ export const parseGenerateVariablesOptions = ({ models }: Props) =>
     model: option.string.layout({
       placeholder: "Select a model",
       label: "Model",
-      allowCustomValue: true,
       helperText: models.helperText,
       autoCompleteItems: models.type === "static" ? models.models : undefined,
       fetcher: models.type === "fetcher" ? models.id : undefined,

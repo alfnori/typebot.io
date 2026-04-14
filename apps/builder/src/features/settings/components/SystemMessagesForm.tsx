@@ -1,8 +1,9 @@
-import { TextInput, Textarea } from "@/components/inputs";
 import { Stack } from "@chakra-ui/react";
 import { useTranslate } from "@tolgee/react";
 import { defaultSystemMessages } from "@typebot.io/settings/constants";
 import type { SystemMessages } from "@typebot.io/settings/schemas";
+import { Textarea } from "@/components/inputs/Textarea";
+import { TextInput } from "@/components/inputs/TextInput";
 
 type Props = {
   systemMessages?: SystemMessages;

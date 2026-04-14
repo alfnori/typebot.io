@@ -1,5 +1,5 @@
-import { setRememberCloseInStorage } from ".";
 import type { ProactiveMessageParams } from "../../types";
+import { setRememberCloseInStorage } from ".";
 import { closeSvgPath } from "./button";
 
 const createProactiveMessage = (
@@ -61,4 +61,4 @@ const closeProactiveMessage = (bubble: Element): void => {
   bubble.classList.remove("message-opened");
 };
 
-export { createProactiveMessage, openProactiveMessage, closeProactiveMessage };
+export { closeProactiveMessage, createProactiveMessage, openProactiveMessage };

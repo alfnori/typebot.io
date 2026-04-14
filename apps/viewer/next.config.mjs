@@ -1,8 +1,8 @@
-import { dirname, join } from "path";
 import { withSentryConfig } from "@sentry/nextjs";
+import { dirname, join } from "path";
 import "@typebot.io/env/compiled";
-import { fileURLToPath } from "url";
 import { configureRuntimeEnv } from "next-runtime-env/build/configure.js";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -57,9 +57,12 @@ const nextConfig = {
     if (isServer) {
       // TODO: Remove once https://github.com/getsentry/sentry-javascript/issues/8105 is merged and sentry is upgraded
       config.ignoreWarnings = [
+        ...(config.ignoreWarnings ?? []),
         {
+          module:
+            /@opentelemetry\/instrumentation\/build\/esm\/platform\/node\/instrumentation\.js/,
           message:
-            /require function is used in a way in which dependencies cannot be statically extracted/,
+            /Critical dependency: the request of a dependency is an expression/,
         },
       ];
       return config;
@@ -68,6 +71,10 @@ const nextConfig = {
     config.resolve.alias["minio"] = false;
     config.resolve.alias["qrcode"] = false;
     config.resolve.alias["isolated-vm"] = false;
+    config.resolve.alias["@googleapis/gmail"] = false;
+    config.resolve.alias["nodemailer"] = false;
+    config.resolve.alias["google-auth-library"] = false;
+    config.resolve.alias["posthog-node"] = false;
     return config;
   },
   async redirects() {
@@ -92,8 +99,8 @@ const nextConfig = {
               destination: `${process.env.LANDING_PAGE_URL}/blog-assets/:asset*`,
             },
             {
-              source: "/_server/:server*",
-              destination: `${process.env.LANDING_PAGE_URL}/_server/:server*`,
+              source: "/_serverFn/:server*",
+              destination: `${process.env.LANDING_PAGE_URL}/_serverFn/:server*`,
             },
             {
               source: "/fonts/:font*",
@@ -102,6 +109,10 @@ const nextConfig = {
             {
               source: "/images/:image*",
               destination: `${process.env.LANDING_PAGE_URL}/images/:image*`,
+            },
+            {
+              source: "/sitemap.xml",
+              destination: `${process.env.LANDING_PAGE_URL}/sitemap.xml`,
             },
           ].concat(
             landingPagePaths.map((path) => ({
@@ -169,8 +180,9 @@ const nextConfig = {
   },
 };
 
-export default process.env.SENTRY_DSN
+export default process.env.SENTRY_DSN && process.env.SENTRY_AUTH_TOKEN
   ? withSentryConfig(nextConfig, {
+      telemetry: false,
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
       authToken: process.env.SENTRY_AUTH_TOKEN,

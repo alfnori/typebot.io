@@ -1,6 +1,3 @@
-import { TableList } from "@/components/TableList";
-import { TextLink } from "@/components/TextLink";
-import { NumberInput } from "@/components/inputs";
 import {
   Accordion,
   AccordionButton,
@@ -11,6 +8,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import type { ChatCompletionOpenAIOptions } from "@typebot.io/blocks-integrations/openai/schema";
+import { Field } from "@typebot.io/ui/components/Field";
+import { BasicNumberInput } from "@/components/inputs/BasicNumberInput";
+import { TableList } from "@/components/TableList";
+import { TextLink } from "@/components/TextLink";
 import { ModelsDropdown } from "../ModelsDropdown";
 import { ChatCompletionMessageItem } from "./ChatCompletionMessageItem";
 import { ChatCompletionResponseItem } from "./ChatCompletionResponseItem";
@@ -111,15 +112,17 @@ export const OpenAIChatCompletionSettings = ({
                 <AccordionIcon />
               </AccordionButton>
               <AccordionPanel>
-                <NumberInput
-                  label="Temperature"
-                  placeholder="1"
-                  max={2}
-                  min={0}
-                  step={0.1}
-                  defaultValue={options.advancedSettings?.temperature}
-                  onValueChange={updateTemperature}
-                />
+                <Field.Root>
+                  <Field.Label>Temperature</Field.Label>
+                  <BasicNumberInput
+                    placeholder="1"
+                    max={2}
+                    min={0}
+                    step={0.1}
+                    defaultValue={options.advancedSettings?.temperature}
+                    onValueChange={updateTemperature}
+                  />
+                </Field.Root>
               </AccordionPanel>
             </AccordionItem>
             <AccordionItem>

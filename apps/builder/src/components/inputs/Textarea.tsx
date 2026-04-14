@@ -1,6 +1,3 @@
-import { VariablesButton } from "@/features/variables/components/VariablesButton";
-import { injectVariableInText } from "@/features/variables/helpers/injectVariableInTextInput";
-import { focusInput } from "@/helpers/focusInput";
 import {
   Textarea as ChakraTextarea,
   FormControl,
@@ -11,12 +8,15 @@ import {
   type TextareaProps,
 } from "@chakra-ui/react";
 import { env } from "@typebot.io/env";
+import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import type { Variable } from "@typebot.io/variables/schemas";
-import type { ReactNode } from "react";
 import type React from "react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { MoreInfoTooltip } from "../MoreInfoTooltip";
+import { VariablesButton } from "@/features/variables/components/VariablesButton";
+import { injectVariableInText } from "@/features/variables/helpers/injectVariableInTextInput";
+import { focusInput } from "@/helpers/focusInput";
 
 type Props = {
   id?: string;
@@ -82,7 +82,8 @@ export const Textarea = ({
     const { text, carretPosition: newCarretPosition } = injectVariableInText({
       variable,
       text: localValue,
-      at: carretPosition,
+      start: carretPosition,
+      end: carretPosition,
     });
     changeValue(text);
     focusInput({ at: newCarretPosition, input: inputRef.current });
@@ -116,8 +117,15 @@ export const Textarea = ({
       spacing={direction === "column" ? 2 : 3}
     >
       {label && (
-        <FormLabel display="flex" flexShrink={0} gap="1" mb="0" mr="0">
-          {label}{" "}
+        <FormLabel
+          display="flex"
+          flexShrink={0}
+          gap="0"
+          mb="0"
+          mr="0"
+          alignItems={direction === "row" ? "center" : undefined}
+        >
+          {label}
           {moreInfoTooltip && (
             <MoreInfoTooltip>{moreInfoTooltip}</MoreInfoTooltip>
           )}

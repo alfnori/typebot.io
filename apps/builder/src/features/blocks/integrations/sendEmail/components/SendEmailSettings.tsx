@@ -1,11 +1,3 @@
-import { MoreInfoTooltip } from "@/components/MoreInfoTooltip";
-import { TextInput, Textarea } from "@/components/inputs";
-import { CodeEditor } from "@/components/inputs/CodeEditor";
-import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
-import { VariableSearchInput } from "@/components/inputs/VariableSearchInput";
-import { isFreePlan } from "@/features/billing/helpers/isFreePlan";
-import { CredentialsDropdown } from "@/features/credentials/components/CredentialsDropdown";
-import { useWorkspace } from "@/features/workspace/WorkspaceProvider";
 import {
   Accordion,
   AccordionButton,
@@ -13,7 +5,6 @@ import {
   AccordionItem,
   AccordionPanel,
   Flex,
-  FormLabel,
   HStack,
   Stack,
   Switch,
@@ -24,10 +15,19 @@ import { defaultSendEmailOptions } from "@typebot.io/blocks-integrations/sendEma
 import type { SendEmailBlock } from "@typebot.io/blocks-integrations/sendEmail/schema";
 import { env } from "@typebot.io/env";
 import { isNotEmpty } from "@typebot.io/lib/utils";
+import { Field } from "@typebot.io/ui/components/Field";
+import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
 import type { Variable } from "@typebot.io/variables/schemas";
 import type { Workspace } from "@typebot.io/workspaces/schemas";
-import React from "react";
-import { SmtpConfigModal } from "./SmtpConfigModal";
+import { CodeEditor } from "@/components/inputs/CodeEditor";
+import { SwitchWithLabel } from "@/components/inputs/SwitchWithLabel";
+import { Textarea } from "@/components/inputs/Textarea";
+import { TextInput } from "@/components/inputs/TextInput";
+import { VariablesCombobox } from "@/components/inputs/VariablesCombobox";
+import { isFreePlan } from "@/features/billing/helpers/isFreePlan";
+import { CredentialsDropdown } from "@/features/credentials/components/CredentialsDropdown";
+import { useWorkspace } from "@/features/workspace/WorkspaceProvider";
+import { SmtpCredentialsCreateDialog } from "./SmtpCredentialsCreateDialog";
 
 type Props = {
   options: SendEmailBlock["options"];
@@ -220,26 +220,23 @@ export const SendEmailSettings = ({ options, onOptionsChange }: Props) => {
               defaultValue={options.body ?? ""}
             />
           )}
-          <Stack pb="4">
-            <HStack>
-              <FormLabel m="0" htmlFor="variable">
-                Attach files:
-              </FormLabel>
+          <Field.Root className="pb-4">
+            <Field.Label>
+              Attach files
               <MoreInfoTooltip>
                 The selected variable should have previously collected files
                 from the File upload input block.
               </MoreInfoTooltip>
-            </HStack>
-
-            <VariableSearchInput
+            </Field.Label>
+            <VariablesCombobox
               initialVariableId={options?.attachmentsVariableId}
               onSelectVariable={handleChangeAttachmentVariable}
             />
-          </Stack>
+          </Field.Root>
         </Stack>
       )}
 
-      <SmtpConfigModal
+      <SmtpCredentialsCreateDialog
         isOpen={isOpen}
         onClose={onClose}
         onNewCredentials={updateCredentialsId}

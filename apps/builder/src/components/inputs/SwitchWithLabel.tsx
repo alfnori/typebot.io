@@ -7,8 +7,8 @@ import {
   type SwitchProps,
 } from "@chakra-ui/react";
 import { isDefined } from "@typebot.io/lib/utils";
-import React, { useEffect, useState } from "react";
-import { MoreInfoTooltip } from "../MoreInfoTooltip";
+import { MoreInfoTooltip } from "@typebot.io/ui/components/MoreInfoTooltip";
+import { useEffect, useState } from "react";
 
 export type SwitchWithLabelProps = {
   label: string;
@@ -43,9 +43,7 @@ export const SwitchWithLabel = ({
       <FormLabel mb="0">
         {label}
         {moreInfoContent && (
-          <>
-            &nbsp;<MoreInfoTooltip>{moreInfoContent}</MoreInfoTooltip>
-          </>
+          <MoreInfoTooltip>{moreInfoContent}</MoreInfoTooltip>
         )}
       </FormLabel>
       <Switch isChecked={isChecked} onChange={handleChange} {...switchProps} />
