@@ -31,7 +31,7 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - 5432:5432
+      - 5433:5432
     networks:
       typebot-network:
         # ipv4_address: 172.22.0.3
@@ -48,7 +48,7 @@ services:
       retries: 5
       timeout: 3s
     ports:
-      - 6379:6379
+      - 6380:6379
     volumes:
       - redis-data:/data
     networks:
@@ -57,7 +57,7 @@ services:
 
   typebot-builder:
     <<: *typebot-common
-    image: baptistearno/typebot-builder:3.8
+    image: baptistearno/typebot-builder:3.16
     ports:
       - "3000:3000"
     networks:
@@ -66,7 +66,7 @@ services:
 
   typebot-viewer:
     <<: *typebot-common
-    image: baptistearno/typebot-viewer:3.8.0
+    image: baptistearno/typebot-viewer:3.16
     ports:
       - "3001:3000"
     networks:
